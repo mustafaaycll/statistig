@@ -5,7 +5,8 @@
   "shell-version": [
     "47", "48"
   ],
+  "url": "https://github.com/mustafaaycll/statistig",
+  "version": 1,
   "settings-schema": "org.gnome.shell.extensions.statistig",
-  "gettext-domain": "statistig@mustafaaycll.github.io",
-  "version-name": "1.0.0"
+  "gettext-domain": "statistig@mustafaaycll.github.io"
 }
