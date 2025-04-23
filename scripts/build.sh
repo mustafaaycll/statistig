@@ -48,13 +48,12 @@ function build_extension_package() {
 	if [ "$USING_TYPESCRIPT" = "true" ]; then
 		if ! (command -v npm &> /dev/null); then
 			echo "ERROR: npm isn't installed. Can't compile TypeScript files. Exiting..."
-
 			exit 1
 		fi
 
 		if find . -maxdepth 1 -type d | grep -q "dist"; then
 			echo "Removing old TypeScript dist/..."
-			rm -rf $TYPESCRIPT_OUT_DIR
+			rm -rf "$TYPESCRIPT_OUT_DIR"
 			echo "Done."
 		fi
 
@@ -99,24 +98,27 @@ function build_extension_package() {
 			compile_resources
 		else
 			echo "ERROR: glib-compile-resources isn't installed. Resources won't be compiled. This may cause errors for the extension. Please install glib-compile-resources and rebuild the extension. Exiting..."
-
 			exit 1
 		fi
 	fi
 
-	echo "Zipping files..."
+	echo "Creating clean extension zip..."
 
-	(
-		rm -f "$UUID".shell-extension.zip
-		cd "$JS_DIR" && zip -qr ../"$UUID".shell-extension.zip \
-			. \
-			../metadata.json \
-			../LICENSE \
-			../"$RESOURCE_TARGET"
-	)
+	# Build into temporary folder with flat structure
+	rm -rf _build_temp
+	mkdir -p _build_temp
 
-	echo "Extension package zipped."
+	cp -r "$JS_DIR"/* _build_temp/
+	cp metadata.json LICENSE "$RESOURCE_TARGET" _build_temp/ 2>/dev/null || true
+
+	cd _build_temp
+	zip -qr "../$UUID.shell-extension.zip" .
+	cd ..
+	rm -rf _build_temp
+
+	echo "Extension package zipped at: $UUID.shell-extension.zip"
 }
+
 
 function try_restarting_gnome_shell() {
 	# Initial check to see if we are running under Wayland. However, just cause
