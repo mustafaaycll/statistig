@@ -1,0 +1,11 @@
+{
+  "name": "Statistig",
+  "description": "Native-like resource monitoring",
+  "uuid": "statistig@mustafaaycll.github.io",
+  "shell-version": [
+    "47", "48"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.statistig",
+  "gettext-domain": "statistig@mustafaaycll.github.io",
+  "version-name": "1.0.0"
+}

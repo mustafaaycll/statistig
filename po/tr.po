@@ -1,0 +1,29 @@
+# Turkish translations for Statistig package.
+# Copyright (C) 2025 Mustafa Yücel
+# This file is distributed under the same license as the Statistig package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Statistig\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-23 17:59+0300\n"
+"PO-Revision-Date: 2025-04-23 17:59+0300\n"
+"Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
+"Language-Team: none\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/switch.ts:33
+msgid "Processor"
+msgstr "İşlemci"
+
+#: src/switch.ts:36
+msgid "Memory"
+msgstr "Bellek"
+
+#: src/toggle.ts:61
+msgid "Theme"
+msgstr "Tema"

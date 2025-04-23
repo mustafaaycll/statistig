@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.statistig" path="/org/gnome/shell/extensions/statistig/">
+        
+        <key name="base-path" type="s">
+            <default>'none'</default>
+            <summary>Extension base path to locate resources</summary>
+            <description>Absolute path to the extension itself</description>
+        </key>
+
+        <key name="icon-theme" type="s">
+            <default>'adwaita'</default>
+            <summary>Icon theme to use</summary>
+            <description>The name of the icon theme</description>
+        </key>
+
+        <key name="proc-enabled" type="b">
+            <default>true</default>
+            <summary>Processor to be monitored or not</summary>
+            <description>Option to monitor processor</description>
+        </key>
+
+        <key name="mem-enabled" type="b">
+            <default>true</default>
+            <summary>Memory to be monitored or not</summary>
+            <description>Option to monitor memory</description>
+        </key>
+
+    </schema>
+</schemalist>
