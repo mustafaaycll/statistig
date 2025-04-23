@@ -12,7 +12,7 @@ Install Statistig from the (link will be available as soon as it is released on 
 
 ## Requirements
 
-* Gnome 46 or newer.
+* Gnome 47 or newer.
 
 ## Compatibility
 
