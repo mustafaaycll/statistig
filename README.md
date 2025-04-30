@@ -8,7 +8,7 @@ Statistig is a minimal and elegant system monitor for GNOME Shell, designed to a
 
 # Installation
 
-Install Statistig from the (link will be available as soon as it is released on GNOME Shell extensions page)
+Install Statistig from the [GNOME Shell Extesions page](https://extensions.gnome.org/extension/8071/statistig/)
 
 ## Requirements
 
