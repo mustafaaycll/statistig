@@ -6,6 +6,12 @@ Statistig is a minimal and elegant system monitor for GNOME Shell, designed to a
   <img src="resources/images/screenshot.png" alt="Statistig Screenshot">
 </p>
 
+Statistig respects the UI. Below are some of icons, to explain how decisions are made when crafting icons. Since the area these icons are going to be displayed is too small, communication through colors is preferred. Either indicators will turn to yellow to indicate 70% to 89%, and red to indicate the rest.
+
+<p align="center">
+  <img src="resources/images/presentation.png" alt="Statistig Icons Presentation">
+</p>
+
 # Installation
 
 Install Statistig from the [GNOME Shell Extesions page](https://extensions.gnome.org/extension/8071/statistig/)
