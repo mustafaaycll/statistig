@@ -1,0 +1,42 @@
+name: Release Statistig
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    if: |
+      startsWith(github.event.head_commit.message, 'Merge pull request') &&
+      contains(github.event.head_commit.message, 'from development')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: sudo apt-get install -y gettext libglib2.0-dev-bin zip
+
+      - name: Run build script
+        run: ./scripts/build.sh
+
+      - name: Get current and next version
+        id: version
+        run: |
+          TAGS=$(git tag --sort=-v:refname)
+          LATEST_TAG=$(echo "$TAGS" | head -n 1)
+          if [[ -z "$LATEST_TAG" ]]; then
+            echo "tag=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=$((LATEST_TAG + 1))" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          body: ${{ github.event.head_commit.message }}
+          files: statistig@mustafaaycll.github.io.shell-extension.zip
