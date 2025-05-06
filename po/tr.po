@@ -27,3 +27,35 @@ msgstr "Bellek"
 #: src/toggle.ts:61
 msgid "Theme"
 msgstr "Tema"
+
+#: src/prefs.ts:25
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: src/prefs.ts:30
+msgid "Appearance"
+msgstr "Görünüm"
+
+#: src/prefs.ts:41
+msgid "Icon Pack"
+msgstr "Ikon Paketi"
+
+#: src/prefs.ts:59
+msgid "About"
+msgstr "Hakkında"
+
+#: src/toggle.ts:77
+msgid "Statistig Settings"
+msgstr "Statistig Ayarları"
+
+#: src/prefs.ts:104
+msgid "Native-like Resource Monitoring"
+msgstr "Varsayılan Uygulama Hissiyatıyla Kaynak İzleme"
+
+#: src/prefs.ts:110
+msgid "authored by Mustafa Yücel"
+msgstr "Mustafa Yücel tarafından geliştirildi"
+
+#: src/prefs.ts:116
+msgid "View on GitHub"
+msgstr "GitHub'da Görüntüle"
