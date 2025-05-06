@@ -28,11 +28,21 @@ Statistig has been tested on the following systems
 
 ## Manual Installation
 
+### Install a compiled version
+
+* Download the zip file listed under the latest tag in the [releases tab](https://github.com/mustafaaycll/statistig/releases)
+* Copy downloaded zip file to `~/.local/share/gnome-shell/extensions`
+* Log out and log in back to enable it.
+
+### Compile it yourself
+
 * Clone the repository using `git clone <url>`
 * Go to the containing directory using `cd statistig`
 * Run `npm install` to fetch dependencies
 * Run `chmod +x scripts/build.sh` with sudo privileges to make `build.sh` script executable.
-* Run `./scripts/build.sh` to install it on you GNOME Shell
+* Run *one* of the steps below:
+  * Run `./scripts/build.sh` to compile the extension in zip format, copy generated zip file to `~/.local/share/gnome-shell/extensions`
+  * OR run `./scripts/build.sh --install` to compile and install it on your GNOME Shell
 * Log out and log in back to enable it.
 
 # License
