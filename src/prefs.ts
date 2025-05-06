@@ -30,7 +30,7 @@ import { StatistigIcons } from './icons.js';
 export default class StatistigPrefs extends ExtensionPreferences {
     fillPreferencesWindow(window: Adw.PreferencesWindow) {
         return new Promise<void>((resolve) => {
-            const config = new StatistigConfig(this.getSettings());
+            const config = new StatistigConfig(this.getSettings(), null);
             window.add(this.buildSettingsPage(config));
             window.add(this.buildAboutPage(config));
             window.set_default_size(600, 400);

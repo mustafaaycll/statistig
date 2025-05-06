@@ -21,7 +21,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import { StatistigQuickMenuToggle } from './toggle.js';
 import { StatistigConfig } from './config.js';
-
+import { StatistigMethods } from './methods.js';
 
 
 export default class Statistig extends Extension {
@@ -30,8 +30,7 @@ export default class Statistig extends Extension {
     public quickMenuToggle: StatistigQuickMenuToggle | null = null;
 
     enable() {
-
-        this.config = new StatistigConfig(this.getSettings());
+        this.config = new StatistigConfig(this.getSettings(), new StatistigMethods(this));
         if (this.config.basePath === 'none') {
             this.config.basePath = this.path;
         }

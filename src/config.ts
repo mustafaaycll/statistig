@@ -16,51 +16,58 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 import Gio from 'gi://Gio';
+import { StatistigMethods } from './methods.js';
 
 export class StatistigConfig {
-    private _settigns: Gio.Settings;
+    private _settings: Gio.Settings;
+    private _methods: StatistigMethods | null;
 
-    constructor(settings: Gio.Settings) {
-        this._settigns = settings;
+    constructor(settings: Gio.Settings, methods: StatistigMethods | null) {
+        this._settings = settings;
+        this._methods = methods;
+    }
+
+    get methods(): StatistigMethods | null {
+        return this._methods;
     }
 
     get basePath(): string {
-        return this._settigns.get_string('base-path');
+        return this._settings.get_string('base-path');
     }
 
     set basePath(v: string) {
-        this._settigns.set_string('base-path', v);
+        this._settings.set_string('base-path', v);
     }
 
     get iconTheme(): string {
-        return this._settigns.get_string('icon-theme');
+        return this._settings.get_string('icon-theme');
     }
 
     set iconTheme(v : string) {
-        this._settigns.set_string('icon-theme', v);
+        this._settings.set_string('icon-theme', v);
     }
     
     get procMonitoringEnabled() : boolean {
-        return this._settigns.get_boolean('proc-enabled');
+        return this._settings.get_boolean('proc-enabled');
     }
     
     set procMonitoringEnabled(v : boolean) {
-        this._settigns.set_boolean('proc-enabled', v);
+        this._settings.set_boolean('proc-enabled', v);
     }
     
     get memMonitoringEnabled() : boolean {
-        return this._settigns.get_boolean('mem-enabled');
+        return this._settings.get_boolean('mem-enabled');
     }
     
     set memMonitoringEnabled(v : boolean) {
-        this._settigns.set_boolean('mem-enabled', v);
+        this._settings.set_boolean('mem-enabled', v);
     }
 
     connect(identifier: 'icon-theme' | 'base-path' | 'proc-enabled' | 'mem-enabled', callback: () => void): number {
-        return this._settigns.connect(`changed::${identifier}`, callback);
+        return this._settings.connect(`changed::${identifier}`, callback);
     }
 
     disconnect(handlerId: number): void {
-        this._settigns.disconnect(handlerId);
+        this._settings.disconnect(handlerId);
     }    
 }

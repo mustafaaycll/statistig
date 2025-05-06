@@ -74,11 +74,7 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             
             ins.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
             ins.menu.addAction(_("Statistig Settings"), () => {
-                try {
-                    GLib.spawn_command_line_async('gnome-extensions prefs statistig@mustafaaycll.github.io');
-                } catch (e) {
-                    logError(e);
-                }
+                ins.config?.methods?.openPreferences();
             });
 
             ins.connections.config.iconTheme = ins.config.connect("icon-theme", () => {
