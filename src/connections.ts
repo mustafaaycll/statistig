@@ -24,7 +24,13 @@ export class StatistigConnections {
     switch: {
         proc: number | null,
         mem: number | null
-    }
+    };
+    config: {
+        iconTheme: number | null,
+        basePath: number | null,
+        procEnabled: number | null,
+        memEnabled: number | null
+    };
 
     constructor() {
         this.toggle = null;
@@ -36,5 +42,11 @@ export class StatistigConnections {
             proc: null,
             mem: null
         }
+        this.config = {
+            iconTheme: null,
+            basePath: null,
+            procEnabled: null,
+            memEnabled: null
+        };
     }
 }

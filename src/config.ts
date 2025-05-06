@@ -55,4 +55,12 @@ export class StatistigConfig {
     set memMonitoringEnabled(v : boolean) {
         this._settigns.set_boolean('mem-enabled', v);
     }
+
+    connect(identifier: 'icon-theme' | 'base-path' | 'proc-enabled' | 'mem-enabled', callback: () => void): number {
+        return this._settigns.connect(`changed::${identifier}`, callback);
+    }
+
+    disconnect(handlerId: number): void {
+        this._settigns.disconnect(handlerId);
+    }    
 }

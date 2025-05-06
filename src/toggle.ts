@@ -20,8 +20,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import St from 'gi://St';
 import GObject from 'gi://GObject';
+import GLib from 'gi://GLib';
 
 import { StatistigConstants } from './constants.js';
 import { StatistigConfig } from './config.js';
@@ -68,31 +68,24 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             ins.switches = new StatistigSwitchMenu(ins.config);
             ins.connections.switch = ins.switches.connections;
 
-
             ins.menu.setHeader(StatistigIcons.getStatistigSymbolicIcon(config.basePath), 'Statistig');
             ins.menu.addMenuItem(ins.switches.proc);
             ins.menu.addMenuItem(ins.switches.mem);
             
             ins.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+            ins.menu.addAction(_("Statistig Settings"), () => {
+                try {
+                    GLib.spawn_command_line_async('gnome-extensions prefs statistig@mustafaaycll.github.io');
+                } catch (e) {
+                    logError(e);
+                }
+            });
 
-            ins.dropdown = new PopupMenu.PopupSubMenuMenuItem(_("Theme"));
-            ins.dropdown.insert_child_above(
-                new St.Icon({
-                    gicon: StatistigIcons.getStatistigThemeSymbolicIcon(ins.config.basePath)
-                }),
-                ins.dropdown.get_first_child()
-            );
-            ins.dropdown.menu.addAction('Adwaita', () => {
-                if (!ins.config) return;
-                ins.config.iconTheme = 'adwaita';
+            ins.connections.config.iconTheme = ins.config.connect("icon-theme", () => {
                 ins.switches?.update();
+                ins.indicators?.update('proc', ins.monitor?.cpu_usage ?? 0);
+                ins.indicators?.update('mem', ins.monitor?.ram_usage ?? 0);
             });
-            ins.dropdown.menu.addAction('Papirus', () => {
-                if (!ins.config) return;
-                ins.config.iconTheme = 'papirus';
-                ins.switches?.update();
-            });
-            ins.menu.addMenuItem(ins.dropdown);
             
             return ins;
         }
@@ -121,6 +114,24 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
                     if (this.connections.switch.mem) {
                         this.switches?.mem.disconnect(this.connections.switch.mem);
                         this.connections.switch.mem = null;
+                    }
+                }
+                if (this.connections.config) {
+                    if (this.connections.config.iconTheme) {
+                        this.config?.disconnect(this.connections.config.iconTheme);
+                        this.connections.config.iconTheme = null;
+                    }
+                    if (this.connections.config.basePath) {
+                        this.config?.disconnect(this.connections.config.basePath);
+                        this.connections.config.basePath = null;
+                    }
+                    if (this.connections.config.memEnabled) {
+                        this.config?.disconnect(this.connections.config.memEnabled);
+                        this.connections.config.memEnabled = null;
+                    }
+                    if (this.connections.config.procEnabled) {
+                        this.config?.disconnect(this.connections.config.procEnabled);
+                        this.connections.config.procEnabled = null;
                     }
                 }
             }

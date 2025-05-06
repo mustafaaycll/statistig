@@ -21,4 +21,6 @@ export class StatistigConstants {
     static readonly StatistigThemeIconName = "brush-symbolic.svg"
 
     static readonly QuickMenuToggleTitle = "Statistig";
+
+    static readonly IconPacks = ["adwaita", "papirus"];
 }

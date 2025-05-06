@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the Statistig package.
 # Mustafa Yücel <mustafayucel.cs@gmail.com>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Statistig\n"
@@ -27,4 +26,36 @@ msgstr ""
 
 #: src/toggle.ts:61
 msgid "Theme"
+msgstr ""
+
+#: src/prefs.ts:25
+msgid "Settings"
+msgstr ""
+
+#: src/prefs.ts:30
+msgid "Appearance"
+msgstr ""
+
+#: src/prefs.ts:41
+msgid "Icon Pack"
+msgstr ""
+
+#: src/prefs.ts:59
+msgid "About"
+msgstr ""
+
+#: src/toggle.ts:77
+msgid "Statistig Settings"
+msgstr ""
+
+#: src/prefs.ts:104
+msgid "Native-like Resource Monitoring"
+msgstr ""
+
+#: src/prefs.ts:110
+msgid "authored by Mustafa Yücel"
+msgstr ""
+
+#: src/prefs.ts:116
+msgid "View on GitHub"
 msgstr ""
