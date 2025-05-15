@@ -16,30 +16,28 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import GObject from 'gi://GObject';
-import GLib from 'gi://GLib';
 
 import { StatistigConstants } from './constants.js';
 import { StatistigConfig } from './config.js';
 import { StatistigIcons } from './icons.js';
-import { StatistigSystemIndicator } from './indicator.js';
+import { StatistigSystemIndicators } from './indicators.js';
 import { StatistigMonitor } from './monitor.js';
 import { StatistigSwitchMenu } from './switch.js';
 import { StatistigConnections } from './connections.js';
+import { StatistigSystemButtons } from './buttons.js';
 
 export const StatistigQuickMenuToggle = GObject.registerClass(
     class StatistigQuickMenuToggle extends QuickSettings.QuickMenuToggle {
 
         public config: StatistigConfig | null = null;
         public monitor: StatistigMonitor | null = null;
-        public indicators: StatistigSystemIndicator | null = null;
+        public indicators: StatistigSystemIndicators | null = null;
         public connections: StatistigConnections | null = null;
-        public switches: StatistigSwitchMenu | null = null;
-        public dropdown: PopupMenu.PopupSubMenuMenuItem | null = null;
+        public buttons: StatistigSystemButtons | null = null;
 
         _init(params?: Partial<QuickSettings.QuickMenuToggle.ConstructorProps>): void {
             super._init(params);
@@ -53,120 +51,115 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             ins.title = StatistigConstants.QuickMenuToggleTitle;
             ins.gicon = StatistigIcons.getStatistigSymbolicIcon(config.basePath);
             ins.menuEnabled = true;
-            ins.connections.toggle = ins.connect('clicked', ins.toggle);
-
-            ins.monitor = new StatistigMonitor();
-            ins.connections.monitor.proc = ins.monitor.connect('notify::cpu-usage', () => {
-                const cpu = ins.monitor!.cpu_usage;
-                ins.indicators?.update('proc', cpu);
-            });
-            ins.connections.monitor.mem = ins.monitor.connect('notify::ram-usage', () => {
-                const mem = ins.monitor!.ram_usage;
-                ins.indicators?.update('mem', mem);
-            });
-
-            ins.switches = new StatistigSwitchMenu(ins.config);
-            ins.connections.switch = ins.switches.connections;
-
-            ins.menu.setHeader(StatistigIcons.getStatistigSymbolicIcon(config.basePath), 'Statistig');
-            ins.menu.addMenuItem(ins.switches.proc);
-            ins.menu.addMenuItem(ins.switches.mem);
             
+            ins.menu.setHeader(StatistigIcons.getStatistigSymbolicIcon(config.basePath), 'Statistig');
             ins.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
             ins.menu.addAction(_("Statistig Settings"), () => {
                 ins.config?.methods?.openPreferences();
             });
 
-            ins.connections.config.iconTheme = ins.config.connect("icon-theme", () => {
-                ins.switches?.update();
-                ins.indicators?.update('proc', ins.monitor?.cpu_usage ?? 0);
-                ins.indicators?.update('mem', ins.monitor?.ram_usage ?? 0);
-            });
+            ins.connections.toggle.push(
+                ins.connect('clicked', ins.toggle)
+            );
             
             return ins;
         }
 
-        public destroy(): void {
+        public bind(): void {
+            if (!this.connections || !this.monitor || !this.config) { return }
+
+            this.connections.monitor.push(
+                this.monitor.connect('notify::cpu-usage', () => {
+                    const cpu = this.monitor!.cpu_usage;
+                    this.indicators?.update('proc', cpu);
+                    this.buttons?.update('proc', cpu);
+                }),
+                this.monitor.connect('notify::ram-usage', () => {
+                    const mem = this.monitor!.ram_usage;
+                    this.indicators?.update('mem', mem);
+                    this.buttons?.update('mem', mem);
+                })
+            );
+
+            this.connections.config.push(
+                this.config.connect('icon-theme', () => {
+                    this.indicators?.update('proc', this.monitor?.cpu_usage ?? 0);
+                    this.indicators?.update('mem', this.monitor?.ram_usage ?? 0);
+                    this.buttons?.update('proc', this.monitor?.cpu_usage ?? 0);
+                    this.buttons?.update('mem', this.monitor?.ram_usage ?? 0);
+                })
+            );
+        }
+
+        public unbind(complete: boolean = true): void {
             if (this.connections) {
-                if (this.connections.toggle) {
-                    this.disconnect(this.connections.toggle);
-                    this.connections.toggle = null;
+                for (let i = 0; i < this.connections.config.length; i++) {
+                    const c = this.connections.config[i];
+                    this.config?.disconnect(c);
                 }
-                if (this.connections.monitor) {
-                    if (this.connections.monitor.proc) {
-                        this.monitor?.disconnect(this.connections.monitor.proc);
-                        this.connections.monitor.proc = null;
-                    }
-                    if (this.connections.monitor.mem) {
-                        this.monitor?.disconnect(this.connections.monitor.mem);
-                        this.connections.monitor.mem = null;
-                    }
+                for (let i = 0; i < this.connections.monitor.length; i++) {
+                    const c = this.connections.monitor[i];
+                    this.monitor?.disconnect(c);
                 }
-                if (this.connections.switch) {
-                    if (this.connections.switch.proc) {
-                        this.switches?.proc.disconnect(this.connections.switch.proc);
-                        this.connections.switch.proc = null;
-                    }
-                    if (this.connections.switch.mem) {
-                        this.switches?.mem.disconnect(this.connections.switch.mem);
-                        this.connections.switch.mem = null;
-                    }
-                }
-                if (this.connections.config) {
-                    if (this.connections.config.iconTheme) {
-                        this.config?.disconnect(this.connections.config.iconTheme);
-                        this.connections.config.iconTheme = null;
-                    }
-                    if (this.connections.config.basePath) {
-                        this.config?.disconnect(this.connections.config.basePath);
-                        this.connections.config.basePath = null;
-                    }
-                    if (this.connections.config.memEnabled) {
-                        this.config?.disconnect(this.connections.config.memEnabled);
-                        this.connections.config.memEnabled = null;
-                    }
-                    if (this.connections.config.procEnabled) {
-                        this.config?.disconnect(this.connections.config.procEnabled);
-                        this.connections.config.procEnabled = null;
+                if (complete) {
+                    for (let i = 0; i < this.connections!.toggle.length; i++) {
+                        const c = this.connections!.toggle[i];
+                        this.disconnect(c);
                     }
                 }
             }
+        }
+
+        public destroy(): void {
+            this.destroyMonitor();
+            this.destroyIndicators();
+            this.destroyButtons();
+            this.unbind();
+            super.destroy();
+
+        }
+
+        public destroyMonitor(): void {
             if (this.monitor) {
                 this.monitor.stop();
                 this.monitor = null;
             }
-            if (this.switches) {
-                this.switches.proc.destroy();
-                this.switches.mem.destroy();
-                this.switches = null;
-            }
+        }
+
+        public destroyIndicators(): void {
             if (this.indicators) {
                 this.indicators.destroy();
                 this.indicators = null;
             }
-            if (this.dropdown) {
-                this.dropdown.destroy();
-                this.dropdown = null;
+        }
+
+        public destroyButtons(): void {
+            if (this.buttons) {
+                this.buttons.destroy();
+                this.buttons = null;
             }
-            super.destroy();
         }
 
         public toggle(_source: StatistigQuickMenuToggle, clicked_button: number) {
             _source.set_checked(!_source.get_checked());
 
             if (_source.get_checked()) {
-                _source.indicators = StatistigSystemIndicator.create(_source.config!);
+                _source.indicators = StatistigSystemIndicators.create(_source.config!);
+                _source.indicators.show();
 
-                Main.panel.statusArea.quickSettings.addExternalIndicator(
-                    _source.indicators
-                );
+                _source.buttons = StatistigSystemButtons.create(_source.config!);
+                _source.buttons.show();
 
+                _source.monitor = new StatistigMonitor();
                 _source.monitor?.start();
 
+                _source.bind();
+
             } else {
-                _source.monitor?.stop();
-                _source.indicators?.destroy();
-                _source.indicators = null;
+                _source.destroyMonitor();
+                _source.destroyButtons();
+                _source.destroyIndicators();
+                _source.unbind(false);
             }
         }
     }

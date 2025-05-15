@@ -16,37 +16,7 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 export class StatistigConnections {
-    toggle: number | null;
-    monitor: {
-        proc: number | null,
-        mem: number | null
-    };
-    switch: {
-        proc: number | null,
-        mem: number | null
-    };
-    config: {
-        iconTheme: number | null,
-        basePath: number | null,
-        procEnabled: number | null,
-        memEnabled: number | null
-    };
-
-    constructor() {
-        this.toggle = null;
-        this.monitor = {
-            proc: null,
-            mem: null
-        }
-        this.switch = {
-            proc: null,
-            mem: null
-        }
-        this.config = {
-            iconTheme: null,
-            basePath: null,
-            procEnabled: null,
-            memEnabled: null
-        };
-    }
+    toggle: number[] = [];
+    monitor: number[] = [];
+    config: number[] = [];
 }

@@ -67,7 +67,43 @@ export default class StatistigPrefs extends ExtensionPreferences {
     
         appearanceGroup.add(iconPackRow);
 
+        const behaviorGroup = new Adw.PreferencesGroup({
+            title: _('Behavior'),
+        });
+
+        const booleanSettings: { key: keyof StatistigConfig, title: string }[] = [
+            { key: 'procMonitoringEnabled', title: _('Show processor indicator in status area') },
+            { key: 'procButtonEnabled',     title: _('Show processor button in quick settings') },
+            { key: 'memMonitoringEnabled',  title: _('Show memory indicator in status area') },
+            { key: 'memButtonEnabled',      title: _('Show memory button in quick settings') },
+            { key: 'batteryButtonStyled',   title: _('Enforce styling on battery button in quick settings') },
+            { key: 'screenshotButtonHidden',title: _('Hide screenshot button in quick settings') },
+            { key: 'settingsButtonHidden',  title: _('Hide settings button in quick settings') },
+            { key: 'lockButtonHidden',      title: _('Hide lock button in quick settings') },
+        ];
+
+        for (const { key, title } of booleanSettings) {
+            const row = new Adw.ActionRow({
+                title: title,
+            });
+
+            const toggle = new Gtk.Switch({
+                active: config[key] as boolean,
+                valign: Gtk.Align.CENTER,
+            });
+
+            toggle.connect('notify::active', () => {
+                // @ts-ignore: accessing a read-only setter by key is normally forbidden in TS
+                config[key] = toggle.active;
+            });
+
+            row.add_suffix(toggle);
+            row.activatable_widget = toggle;
+            behaviorGroup.add(row);
+        }
+
         settingsPage.add(appearanceGroup);
+        settingsPage.add(behaviorGroup);
 
         return settingsPage;
     }

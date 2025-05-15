@@ -1,81 +1,81 @@
-# SOME DESCRIPTIVE TITLE.
+# English (US) translations for Statistig package.
 # Copyright (C) 2025 Mustafa Yücel
 # This file is distributed under the same license as the Statistig package.
-# Mustafa Yücel <mustafayucel.cs@gmail.com>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Statistig\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-15 16:54\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-05-15 16:54\n"
+"Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
+"Language-Team: none\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Processor"
-msgstr ""
+msgstr "Processor"
 
 msgid "Memory"
-msgstr ""
+msgstr "Memory"
 
 msgid "Theme"
-msgstr ""
+msgstr "Theme"
 
 msgid "Settings"
-msgstr ""
+msgstr "Settings"
 
 msgid "Appearance"
-msgstr ""
+msgstr "Appearance"
 
 msgid "Icon Pack"
-msgstr ""
+msgstr "Icon Pack"
 
 msgid "About"
-msgstr ""
+msgstr "About"
 
 msgid "Statistig Settings"
-msgstr ""
+msgstr "Statistig Settings"
 
 msgid "Native-like Resource Monitoring"
-msgstr ""
+msgstr "Native-like Resource Monitoring"
 
 msgid "authored by Mustafa Yücel"
-msgstr ""
+msgstr "authored by Mustafa Yücel"
 
 msgid "View on GitHub"
-msgstr ""
+msgstr "View on GitHub"
 
 msgid "Behavior"
-msgstr ""
+msgstr "Behavior"
 
 msgid "Show processor indicator in status area"
-msgstr ""
+msgstr "Show processor indicator in status area"
 
 msgid "Show processor button in quick settings"
-msgstr ""
+msgstr "Show processor button in quick settings"
 
 msgid "Show memory indicator in status area"
-msgstr ""
+msgstr "Show memory indicator in status area"
 
 msgid "Show memory button in quick settings"
-msgstr ""
+msgstr "Show memory button in quick settings"
 
 msgid "Enforce styling on battery button in quick settings"
-msgstr ""
+msgstr "Enforce styling on battery button in quick settings"
 
 msgid "Hide spacer box in quick settings"
-msgstr ""
+msgstr "Hide spacer box in quick settings"
 
 msgid "Hide screenshot button in quick settings"
-msgstr ""
+msgstr "Hide screenshot button in quick settings"
 
 msgid "Hide settings button in quick settings"
-msgstr ""
+msgstr "Hide settings button in quick settings"
 
 msgid "Hide lock button in quick settings"
-msgstr ""
+msgstr "Hide lock button in quick settings"
 
