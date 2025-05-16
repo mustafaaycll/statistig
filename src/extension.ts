@@ -61,10 +61,7 @@ export default class Statistig extends Extension {
 
     registerQuickMenuToggle(): void {
         const quickSettings: any = Main.panel.statusArea.quickSettings;
-        const backgroundAppsQuickMenuItem: any = quickSettings._backgroundApps?.quickSettingsItems?.at(-1) ?? null;
-        quickSettings.menu.insertItemBefore(
-            this.quickMenuToggle,
-            backgroundAppsQuickMenuItem
-        );
+        const sibling: any = quickSettings._backgroundApps?.quickSettingsItems?.at(-1) ?? null;
+        quickSettings.menu.insertItemBefore(this.quickMenuToggle, sibling);
     }
 }

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Statistig\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-23 17:59+0300\n"
-"PO-Revision-Date: 2025-04-23 17:59+0300\n"
+"POT-Creation-Date: 2025-05-15 16:54\n"
+"PO-Revision-Date: 2025-05-15 16:54\n"
 "Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
 "Language-Team: none\n"
 "Language: tr\n"
@@ -16,46 +16,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/switch.ts:33
 msgid "Processor"
 msgstr "İşlemci"
 
-#: src/switch.ts:36
 msgid "Memory"
 msgstr "Bellek"
 
-#: src/toggle.ts:61
 msgid "Theme"
 msgstr "Tema"
 
-#: src/prefs.ts:25
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/prefs.ts:30
 msgid "Appearance"
 msgstr "Görünüm"
 
-#: src/prefs.ts:41
 msgid "Icon Pack"
-msgstr "Ikon Paketi"
+msgstr "İkon Paketi"
 
-#: src/prefs.ts:59
 msgid "About"
 msgstr "Hakkında"
 
-#: src/toggle.ts:77
 msgid "Statistig Settings"
 msgstr "Statistig Ayarları"
 
-#: src/prefs.ts:104
 msgid "Native-like Resource Monitoring"
 msgstr "Varsayılan Uygulama Hissiyatıyla Kaynak İzleme"
 
-#: src/prefs.ts:110
 msgid "authored by Mustafa Yücel"
 msgstr "Mustafa Yücel tarafından geliştirildi"
 
-#: src/prefs.ts:116
 msgid "View on GitHub"
 msgstr "GitHub'da Görüntüle"
+
+msgid "Behavior"
+msgstr "Davranış"
+
+msgid "Show processor indicator in status area"
+msgstr "İşlemci göstergesini durum alanında göster"
+
+msgid "Show processor button in quick settings"
+msgstr "İşlemci düğmesini hızlı ayarlarda göster"
+
+msgid "Show memory indicator in status area"
+msgstr "Bellek göstergesini durum alanında göster"
+
+msgid "Show memory button in quick settings"
+msgstr "Bellek düğmesini hızlı ayarlarda göster"
+
+msgid "Enforce styling on battery button in quick settings"
+msgstr "Pil düğmesinde stil zorlaması yap"
+
+msgid "Hide spacer box in quick settings"
+msgstr "Ayırıcı kutuyu hızlı ayarlarda gizle"
+
+msgid "Hide screenshot button in quick settings"
+msgstr "Ekran görüntüsü düğmesini hızlı ayarlarda gizle"
+
+msgid "Hide settings button in quick settings"
+msgstr "Ayarlar düğmesini hızlı ayarlarda gizle"
+
+msgid "Hide lock button in quick settings"
+msgstr "Kilitle düğmesini hızlı ayarlarda gizle"
+

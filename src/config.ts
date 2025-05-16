@@ -43,31 +43,92 @@ export class StatistigConfig {
         return this._settings.get_string('icon-theme');
     }
 
-    set iconTheme(v : string) {
+    set iconTheme(v: string) {
         this._settings.set_string('icon-theme', v);
     }
-    
-    get procMonitoringEnabled() : boolean {
-        return this._settings.get_boolean('proc-enabled');
-    }
-    
-    set procMonitoringEnabled(v : boolean) {
-        this._settings.set_boolean('proc-enabled', v);
-    }
-    
-    get memMonitoringEnabled() : boolean {
-        return this._settings.get_boolean('mem-enabled');
-    }
-    
-    set memMonitoringEnabled(v : boolean) {
-        this._settings.set_boolean('mem-enabled', v);
+
+    get procMonitoringEnabled(): boolean {
+        return this._settings.get_boolean('proc-mon-enabled');
     }
 
-    connect(identifier: 'icon-theme' | 'base-path' | 'proc-enabled' | 'mem-enabled', callback: () => void): number {
+    set procMonitoringEnabled(v: boolean) {
+        this._settings.set_boolean('proc-mon-enabled', v);
+    }
+
+    get procButtonEnabled(): boolean {
+        return this._settings.get_boolean('proc-btn-enabled');
+    }
+
+    set procButtonEnabled(v: boolean) {
+        this._settings.set_boolean('proc-btn-enabled', v);
+    }
+
+    get memMonitoringEnabled(): boolean {
+        return this._settings.get_boolean('mem-mon-enabled');
+    }
+
+    set memMonitoringEnabled(v: boolean) {
+        this._settings.set_boolean('mem-mon-enabled', v);
+    }
+
+    get memButtonEnabled(): boolean {
+        return this._settings.get_boolean('mem-btn-enabled');
+    }
+
+    set memButtonEnabled(v: boolean) {
+        this._settings.set_boolean('mem-btn-enabled', v);
+    }
+
+    get batteryButtonStyled(): boolean {
+        return this._settings.get_boolean('bat-btn-styled');
+    }
+
+    set batteryButtonStyled(v: boolean) {
+        this._settings.set_boolean('bat-btn-styled', v);
+    }
+
+    get screenshotButtonHidden(): boolean {
+        return this._settings.get_boolean('scs-btn-hidden');
+    }
+
+    set screenshotButtonHidden(v: boolean) {
+        this._settings.set_boolean('scs-btn-hidden', v);
+    }
+
+    get settingsButtonHidden(): boolean {
+        return this._settings.get_boolean('stn-btn-hidden');
+    }
+
+    set settingsButtonHidden(v: boolean) {
+        this._settings.set_boolean('stn-btn-hidden', v);
+    }
+
+    get lockButtonHidden(): boolean {
+        return this._settings.get_boolean('lck-btn-hidden');
+    }
+
+    set lockButtonHidden(v: boolean) {
+        this._settings.set_boolean('lck-btn-hidden', v);
+    }
+
+    connect(
+        identifier:
+            | 'base-path'
+            | 'icon-theme'
+            | 'proc-mon-enabled'
+            | 'proc-btn-enabled'
+            | 'mem-mon-enabled'
+            | 'mem-btn-enabled'
+            | 'bat-btn-styled'
+            | 'scs-btn-hidden'
+            | 'stn-btn-hidden'
+            | 'lck-btn-hidden',
+        callback: () => void
+    ): number {
         return this._settings.connect(`changed::${identifier}`, callback);
     }
 
     disconnect(handlerId: number): void {
         this._settings.disconnect(handlerId);
-    }    
+    }
 }

@@ -5,25 +5,61 @@
         <key name="base-path" type="s">
             <default>'none'</default>
             <summary>Extension base path to locate resources</summary>
-            <description>Absolute path to the extension itself</description>
+            <description>The absolute filesystem path to the installed extension folder. Used for locating internal resources like icons and schemas.</description>
         </key>
 
         <key name="icon-theme" type="s">
             <default>'adwaita'</default>
             <summary>Icon theme to use</summary>
-            <description>The name of the icon theme</description>
+            <description>The name of the icon theme to use for the extension's buttons and indicators. For example: "adwaita", "papirus".</description>
         </key>
 
-        <key name="proc-enabled" type="b">
+        <key name="proc-mon-enabled" type="b">
             <default>true</default>
-            <summary>Processor to be monitored or not</summary>
-            <description>Option to monitor processor</description>
+            <summary>Monitor CPU usage</summary>
+            <description>Enable or disable real-time processor usage monitoring.</description>
         </key>
 
-        <key name="mem-enabled" type="b">
+        <key name="proc-btn-enabled" type="b">
             <default>true</default>
-            <summary>Memory to be monitored or not</summary>
-            <description>Option to monitor memory</description>
+            <summary>Show CPU button</summary>
+            <description>Enable or disable the CPU usage button in the quick settings menu.</description>
+        </key>
+
+        <key name="mem-mon-enabled" type="b">
+            <default>true</default>
+            <summary>Monitor memory usage</summary>
+            <description>Enable or disable real-time memory usage monitoring.</description>
+        </key>
+
+        <key name="mem-btn-enabled" type="b">
+            <default>true</default>
+            <summary>Show memory button</summary>
+            <description>Enable or disable the memory usage button in the quick settings menu.</description>
+        </key>
+
+        <key name="bat-btn-styled" type="b">
+            <default>true</default>
+            <summary>Style battery button</summary>
+            <description>Apply custom styling to the battery button in the quick settings area.</description>
+        </key>
+
+        <key name="scs-btn-hidden" type="b">
+            <default>true</default>
+            <summary>Hide screenshot button</summary>
+            <description>Remove the screenshot button from the quick settings menu.</description>
+        </key>
+
+        <key name="stn-btn-hidden" type="b">
+            <default>true</default>
+            <summary>Hide settings button</summary>
+            <description>Remove the settings button from the quick settings menu.</description>
+        </key>
+
+        <key name="lck-btn-hidden" type="b">
+            <default>true</default>
+            <summary>Hide lock screen button</summary>
+            <description>Remove the lock screen button from the quick settings menu.</description>
         </key>
 
     </schema>
