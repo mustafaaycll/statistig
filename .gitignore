@@ -6,5 +6,7 @@ dist/
 gschemas.compiled
 locale/
 node_modules/
+.DS_Store
 .vscode
+.claude
 tokens.txt
