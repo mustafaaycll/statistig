@@ -18,13 +18,13 @@ Install Statistig from the [GNOME Shell Extesions page](https://extensions.gnome
 
 ## Requirements
 
-* Gnome 47 or newer.
+* Gnome 48 or newer.
 
 ## Compatibility
 
 Statistig has been tested on the following systems
 
-* Fedora 41, 42
+* Fedora 42, 43, 44
 
 ## Manual Installation
 
