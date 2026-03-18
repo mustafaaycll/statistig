@@ -22,8 +22,8 @@ msgstr "Processor"
 msgid "Memory"
 msgstr "Memory"
 
-msgid "Theme"
-msgstr "Theme"
+msgid "Statistig Settings"
+msgstr "Statistig Settings"
 
 msgid "Settings"
 msgstr "Settings"
@@ -34,11 +34,38 @@ msgstr "Appearance"
 msgid "Icon Pack"
 msgstr "Icon Pack"
 
+msgid "Behavior"
+msgstr "Behavior"
+
+msgid "Show processor indicator in status area"
+msgstr "Show processor indicator in status area"
+
+msgid "Show memory indicator in status area"
+msgstr "Show memory indicator in status area"
+
+msgid "Labels"
+msgstr "Labels"
+
+msgid "Show numeric label next to processor indicator"
+msgstr "Show numeric label next to processor indicator"
+
+msgid "Show numeric label next to memory indicator"
+msgstr "Show numeric label next to memory indicator"
+
+msgid "Use monospace font for labels"
+msgstr "Use monospace font for labels"
+
+msgid "Use fixed-width formatting for labels"
+msgstr "Use fixed-width formatting for labels"
+
+msgid "Label text alignment"
+msgstr "Label text alignment"
+
+msgid "Only applies when fixed-width formatting is enabled"
+msgstr "Only applies when fixed-width formatting is enabled"
+
 msgid "About"
 msgstr "About"
-
-msgid "Statistig Settings"
-msgstr "Statistig Settings"
 
 msgid "Native-like Resource Monitoring"
 msgstr "Native-like Resource Monitoring"
@@ -48,34 +75,3 @@ msgstr "authored by Mustafa Yücel"
 
 msgid "View on GitHub"
 msgstr "View on GitHub"
-
-msgid "Behavior"
-msgstr "Behavior"
-
-msgid "Show processor indicator in status area"
-msgstr "Show processor indicator in status area"
-
-msgid "Show processor button in quick settings"
-msgstr "Show processor button in quick settings"
-
-msgid "Show memory indicator in status area"
-msgstr "Show memory indicator in status area"
-
-msgid "Show memory button in quick settings"
-msgstr "Show memory button in quick settings"
-
-msgid "Enforce styling on battery button in quick settings"
-msgstr "Enforce styling on battery button in quick settings"
-
-msgid "Hide spacer box in quick settings"
-msgstr "Hide spacer box in quick settings"
-
-msgid "Hide screenshot button in quick settings"
-msgstr "Hide screenshot button in quick settings"
-
-msgid "Hide settings button in quick settings"
-msgstr "Hide settings button in quick settings"
-
-msgid "Hide lock button in quick settings"
-msgstr "Hide lock button in quick settings"
-

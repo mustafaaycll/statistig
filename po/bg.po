@@ -1,0 +1,77 @@
+# Bulgarian translations for Statistig package.
+# Copyright (C) 2025 Mustafa Yücel
+# This file is distributed under the same license as the Statistig package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Statistig\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-15 16:54\n"
+"PO-Revision-Date: 2025-05-15 16:54\n"
+"Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
+"Language-Team: none\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Processor"
+msgstr "Процесор"
+
+msgid "Memory"
+msgstr "Памет"
+
+msgid "Statistig Settings"
+msgstr "Настройки на Statistig"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Appearance"
+msgstr "Външен вид"
+
+msgid "Icon Pack"
+msgstr "Пакет с икони"
+
+msgid "Behavior"
+msgstr "Поведение"
+
+msgid "Show processor indicator in status area"
+msgstr "Показване на индикатора на процесора в лентата на състоянието"
+
+msgid "Show memory indicator in status area"
+msgstr "Показване на индикатора на паметта в лентата на състоянието"
+
+msgid "Labels"
+msgstr "Етикети"
+
+msgid "Show numeric label next to processor indicator"
+msgstr "Показване на числов етикет до индикатора на процесора"
+
+msgid "Show numeric label next to memory indicator"
+msgstr "Показване на числов етикет до индикатора на паметта"
+
+msgid "Use monospace font for labels"
+msgstr "Използване на равноширок шрифт за етикетите"
+
+msgid "Use fixed-width formatting for labels"
+msgstr "Използване на форматиране с фиксирана ширина за етикетите"
+
+msgid "Label text alignment"
+msgstr "Подравняване на текста на етикетите"
+
+msgid "Only applies when fixed-width formatting is enabled"
+msgstr "Прилага се само когато форматирането с фиксирана ширина е включено"
+
+msgid "About"
+msgstr "Относно"
+
+msgid "Native-like Resource Monitoring"
+msgstr "Наблюдение на ресурсите с естествен вид"
+
+msgid "authored by Mustafa Yücel"
+msgstr "създадено от Mustafa Yücel"
+
+msgid "View on GitHub"
+msgstr "Преглед в GitHub"

@@ -1,0 +1,77 @@
+# Greek translations for Statistig package.
+# Copyright (C) 2025 Mustafa Yücel
+# This file is distributed under the same license as the Statistig package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Statistig\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-15 16:54\n"
+"PO-Revision-Date: 2025-05-15 16:54\n"
+"Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
+"Language-Team: none\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Processor"
+msgstr "Επεξεργαστής"
+
+msgid "Memory"
+msgstr "Μνήμη"
+
+msgid "Statistig Settings"
+msgstr "Ρυθμίσεις Statistig"
+
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+msgid "Appearance"
+msgstr "Εμφάνιση"
+
+msgid "Icon Pack"
+msgstr "Πακέτο εικονιδίων"
+
+msgid "Behavior"
+msgstr "Συμπεριφορά"
+
+msgid "Show processor indicator in status area"
+msgstr "Εμφάνιση ένδειξης επεξεργαστή στην περιοχή κατάστασης"
+
+msgid "Show memory indicator in status area"
+msgstr "Εμφάνιση ένδειξης μνήμης στην περιοχή κατάστασης"
+
+msgid "Labels"
+msgstr "Ετικέτες"
+
+msgid "Show numeric label next to processor indicator"
+msgstr "Εμφάνιση αριθμητικής ετικέτας δίπλα στην ένδειξη επεξεργαστή"
+
+msgid "Show numeric label next to memory indicator"
+msgstr "Εμφάνιση αριθμητικής ετικέτας δίπλα στην ένδειξη μνήμης"
+
+msgid "Use monospace font for labels"
+msgstr "Χρήση γραμματοσειράς σταθερού πλάτους για τις ετικέτες"
+
+msgid "Use fixed-width formatting for labels"
+msgstr "Χρήση μορφοποίησης σταθερού πλάτους για τις ετικέτες"
+
+msgid "Label text alignment"
+msgstr "Στοίχιση κειμένου ετικετών"
+
+msgid "Only applies when fixed-width formatting is enabled"
+msgstr "Ισχύει μόνο όταν είναι ενεργοποιημένη η μορφοποίηση σταθερού πλάτους"
+
+msgid "About"
+msgstr "Σχετικά"
+
+msgid "Native-like Resource Monitoring"
+msgstr "Παρακολούθηση πόρων με εγγενή εμφάνιση"
+
+msgid "authored by Mustafa Yücel"
+msgstr "δημιουργήθηκε από τον Mustafa Yücel"
+
+msgid "View on GitHub"
+msgstr "Προβολή στο GitHub"

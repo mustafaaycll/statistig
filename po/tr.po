@@ -22,8 +22,8 @@ msgstr "İşlemci"
 msgid "Memory"
 msgstr "Bellek"
 
-msgid "Theme"
-msgstr "Tema"
+msgid "Statistig Settings"
+msgstr "Statistig Ayarları"
 
 msgid "Settings"
 msgstr "Ayarlar"
@@ -34,11 +34,38 @@ msgstr "Görünüm"
 msgid "Icon Pack"
 msgstr "İkon Paketi"
 
+msgid "Behavior"
+msgstr "Davranış"
+
+msgid "Show processor indicator in status area"
+msgstr "İşlemci göstergesini durum alanında göster"
+
+msgid "Show memory indicator in status area"
+msgstr "Bellek göstergesini durum alanında göster"
+
+msgid "Labels"
+msgstr "Etiketler"
+
+msgid "Show numeric label next to processor indicator"
+msgstr "İşlemci göstergesinin yanında sayısal etiket göster"
+
+msgid "Show numeric label next to memory indicator"
+msgstr "Bellek göstergesinin yanında sayısal etiket göster"
+
+msgid "Use monospace font for labels"
+msgstr "Etiketler için sabit genişlikli yazı tipi kullan"
+
+msgid "Use fixed-width formatting for labels"
+msgstr "Etiketler için sabit genişlikli biçimlendirme kullan"
+
+msgid "Label text alignment"
+msgstr "Etiket metin hizalaması"
+
+msgid "Only applies when fixed-width formatting is enabled"
+msgstr "Yalnızca sabit genişlikli biçimlendirme etkinken geçerlidir"
+
 msgid "About"
 msgstr "Hakkında"
-
-msgid "Statistig Settings"
-msgstr "Statistig Ayarları"
 
 msgid "Native-like Resource Monitoring"
 msgstr "Varsayılan Uygulama Hissiyatıyla Kaynak İzleme"
@@ -48,34 +75,3 @@ msgstr "Mustafa Yücel tarafından geliştirildi"
 
 msgid "View on GitHub"
 msgstr "GitHub'da Görüntüle"
-
-msgid "Behavior"
-msgstr "Davranış"
-
-msgid "Show processor indicator in status area"
-msgstr "İşlemci göstergesini durum alanında göster"
-
-msgid "Show processor button in quick settings"
-msgstr "İşlemci düğmesini hızlı ayarlarda göster"
-
-msgid "Show memory indicator in status area"
-msgstr "Bellek göstergesini durum alanında göster"
-
-msgid "Show memory button in quick settings"
-msgstr "Bellek düğmesini hızlı ayarlarda göster"
-
-msgid "Enforce styling on battery button in quick settings"
-msgstr "Pil düğmesinde stil zorlaması yap"
-
-msgid "Hide spacer box in quick settings"
-msgstr "Ayırıcı kutuyu hızlı ayarlarda gizle"
-
-msgid "Hide screenshot button in quick settings"
-msgstr "Ekran görüntüsü düğmesini hızlı ayarlarda gizle"
-
-msgid "Hide settings button in quick settings"
-msgstr "Ayarlar düğmesini hızlı ayarlarda gizle"
-
-msgid "Hide lock button in quick settings"
-msgstr "Kilitle düğmesini hızlı ayarlarda gizle"
-

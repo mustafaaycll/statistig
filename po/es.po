@@ -1,4 +1,4 @@
-# English (UK) translations for Statistig package.
+# Spanish translations for Statistig package.
 # Copyright (C) 2025 Mustafa Yücel
 # This file is distributed under the same license as the Statistig package.
 #
@@ -10,68 +10,68 @@ msgstr ""
 "PO-Revision-Date: 2025-05-15 16:54\n"
 "Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
 "Language-Team: none\n"
-"Language: en_UK\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Processor"
-msgstr "Processor"
+msgstr "Procesador"
 
 msgid "Memory"
-msgstr "Memory"
+msgstr "Memoria"
 
 msgid "Statistig Settings"
-msgstr "Statistig Settings"
+msgstr "Ajustes de Statistig"
 
 msgid "Settings"
-msgstr "Settings"
+msgstr "Ajustes"
 
 msgid "Appearance"
-msgstr "Appearance"
+msgstr "Apariencia"
 
 msgid "Icon Pack"
-msgstr "Icon Pack"
+msgstr "Paquete de iconos"
 
 msgid "Behavior"
-msgstr "Behaviour"
+msgstr "Comportamiento"
 
 msgid "Show processor indicator in status area"
-msgstr "Show processor indicator in status area"
+msgstr "Mostrar indicador del procesador en el área de estado"
 
 msgid "Show memory indicator in status area"
-msgstr "Show memory indicator in status area"
+msgstr "Mostrar indicador de memoria en el área de estado"
 
 msgid "Labels"
-msgstr "Labels"
+msgstr "Etiquetas"
 
 msgid "Show numeric label next to processor indicator"
-msgstr "Show numeric label next to processor indicator"
+msgstr "Mostrar etiqueta numérica junto al indicador del procesador"
 
 msgid "Show numeric label next to memory indicator"
-msgstr "Show numeric label next to memory indicator"
+msgstr "Mostrar etiqueta numérica junto al indicador de memoria"
 
 msgid "Use monospace font for labels"
-msgstr "Use monospace font for labels"
+msgstr "Usar fuente monoespaciada para las etiquetas"
 
 msgid "Use fixed-width formatting for labels"
-msgstr "Use fixed-width formatting for labels"
+msgstr "Usar formato de ancho fijo para las etiquetas"
 
 msgid "Label text alignment"
-msgstr "Label text alignment"
+msgstr "Alineación del texto de las etiquetas"
 
 msgid "Only applies when fixed-width formatting is enabled"
-msgstr "Only applies when fixed-width formatting is enabled"
+msgstr "Solo se aplica cuando el formato de ancho fijo está activado"
 
 msgid "About"
-msgstr "About"
+msgstr "Acerca de"
 
 msgid "Native-like Resource Monitoring"
-msgstr "Native-like Resource Monitoring"
+msgstr "Monitoreo de recursos con apariencia nativa"
 
 msgid "authored by Mustafa Yücel"
-msgstr "authored by Mustafa Yücel"
+msgstr "creado por Mustafa Yücel"
 
 msgid "View on GitHub"
-msgstr "View on GitHub"
+msgstr "Ver en GitHub"

@@ -22,7 +22,7 @@ msgstr ""
 msgid "Memory"
 msgstr ""
 
-msgid "Theme"
+msgid "Statistig Settings"
 msgstr ""
 
 msgid "Settings"
@@ -34,10 +34,37 @@ msgstr ""
 msgid "Icon Pack"
 msgstr ""
 
-msgid "About"
+msgid "Behavior"
 msgstr ""
 
-msgid "Statistig Settings"
+msgid "Show processor indicator in status area"
+msgstr ""
+
+msgid "Show memory indicator in status area"
+msgstr ""
+
+msgid "Labels"
+msgstr ""
+
+msgid "Show numeric label next to processor indicator"
+msgstr ""
+
+msgid "Show numeric label next to memory indicator"
+msgstr ""
+
+msgid "Use monospace font for labels"
+msgstr ""
+
+msgid "Use fixed-width formatting for labels"
+msgstr ""
+
+msgid "Label text alignment"
+msgstr ""
+
+msgid "Only applies when fixed-width formatting is enabled"
+msgstr ""
+
+msgid "About"
 msgstr ""
 
 msgid "Native-like Resource Monitoring"
@@ -48,34 +75,3 @@ msgstr ""
 
 msgid "View on GitHub"
 msgstr ""
-
-msgid "Behavior"
-msgstr ""
-
-msgid "Show processor indicator in status area"
-msgstr ""
-
-msgid "Show processor button in quick settings"
-msgstr ""
-
-msgid "Show memory indicator in status area"
-msgstr ""
-
-msgid "Show memory button in quick settings"
-msgstr ""
-
-msgid "Enforce styling on battery button in quick settings"
-msgstr ""
-
-msgid "Hide spacer box in quick settings"
-msgstr ""
-
-msgid "Hide screenshot button in quick settings"
-msgstr ""
-
-msgid "Hide settings button in quick settings"
-msgstr ""
-
-msgid "Hide lock button in quick settings"
-msgstr ""
-
