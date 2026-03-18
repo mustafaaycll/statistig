@@ -19,6 +19,7 @@ import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js'
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import St from 'gi://St';
+import Clutter from 'gi://Clutter';
 import GObject from 'gi://GObject';
 
 import { StatistigIcons } from './icons.js';
@@ -32,9 +33,13 @@ export const StatistigSystemIndicators = GObject.registerClass(
         public config: StatistigConfig | null = null;
         public proc: St.Icon | null = null;
         public mem: St.Icon | null = null;
+        public procLabel: St.Label | null = null;
+        public memLabel: St.Label | null = null;
+        private _lastProcRounded: string = '';
+        private _lastMemRounded: string = '';
 
         _init(): void {
-            super._init()            
+            super._init()
         }
 
         static create(config: StatistigConfig): StatistigSystemIndicators {
@@ -53,6 +58,22 @@ export const StatistigSystemIndicators = GObject.registerClass(
                 }),
                 this.config.connect('mem-mon-enabled', () => {
                     this.toggleMem();
+                }),
+                this.config.connect('proc-lbl-enabled', () => {
+                    this.toggleProc();
+                }),
+                this.config.connect('mem-lbl-enabled', () => {
+                    this.toggleMem();
+                }),
+                this.config.connect('lbl-monospace', () => {
+                    if (this.procLabel) this._applyLabelStyle(this.procLabel);
+                    if (this.memLabel) this._applyLabelStyle(this.memLabel);
+                }),
+                this.config.connect('lbl-fixed-width', () => {
+                    // Next update() call will use the new setting
+                }),
+                this.config.connect('lbl-alignment', () => {
+                    // Next update() call will use the new setting
                 })
             );
         }
@@ -66,6 +87,7 @@ export const StatistigSystemIndicators = GObject.registerClass(
                     const c = this.connections[i];
                     this.config.disconnect(c);
                 }
+                this.connections.length = 0;
             }
         }
 
@@ -82,15 +104,31 @@ export const StatistigSystemIndicators = GObject.registerClass(
             if (!this.config) { return }
             this.proc = this._addIndicator();
             this.proc.set_gicon(StatistigIcons.getStatistigSymbolicIcon(this.config.basePath));
+
+            this.procLabel = new St.Label({
+                text: '',
+                y_align: Clutter.ActorAlign.CENTER,
+                visible: false,
+            });
+            this._applyLabelStyle(this.procLabel);
+            this.proc.get_parent()?.add_child(this.procLabel);
         }
-        
+
         public toggleProc(): void {
             if (!this.config || !this.proc) { return }
 
             if (this.config.procMonitoringEnabled) {
                 this.proc.show();
+                if (this.procLabel) {
+                    if (this.config.procLabelEnabled) {
+                        this.procLabel.show();
+                    } else {
+                        this.procLabel.hide();
+                    }
+                }
             } else {
                 this.proc.hide();
+                this.procLabel?.hide();
             }
         }
 
@@ -98,6 +136,14 @@ export const StatistigSystemIndicators = GObject.registerClass(
             if (!this.config) { return }
             this.mem = this._addIndicator();
             this.mem.set_gicon(StatistigIcons.getStatistigSymbolicIcon(this.config.basePath));
+
+            this.memLabel = new St.Label({
+                text: '',
+                y_align: Clutter.ActorAlign.CENTER,
+                visible: false,
+            });
+            this._applyLabelStyle(this.memLabel);
+            this.mem.get_parent()?.add_child(this.memLabel);
         }
 
         public toggleMem(): void {
@@ -105,8 +151,16 @@ export const StatistigSystemIndicators = GObject.registerClass(
 
             if (this.config.memMonitoringEnabled) {
                 this.mem.show();
+                if (this.memLabel) {
+                    if (this.config.memLabelEnabled) {
+                        this.memLabel.show();
+                    } else {
+                        this.memLabel.hide();
+                    }
+                }
             } else {
                 this.mem.hide();
+                this.memLabel?.hide();
             }
         }
 
@@ -114,25 +168,41 @@ export const StatistigSystemIndicators = GObject.registerClass(
             if (!this.config) { return }
 
             const roundedVal: string = (Math.round(value / 10) * 10).toString();
-            
+
             if (identifier === 'proc' && this.proc && this.config.procMonitoringEnabled) {
-                this.proc.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
-                    this.config.basePath,
-                    this.config.iconTheme,
-                    'proc',
-                    roundedVal
-                ));
-                
+                if (roundedVal !== this._lastProcRounded) {
+                    this._lastProcRounded = roundedVal;
+                    this.proc.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
+                        this.config.basePath,
+                        this.config.iconTheme,
+                        'proc',
+                        roundedVal
+                    ));
+                }
+                if (this.procLabel && this.config.procLabelEnabled) {
+                    this.procLabel.set_text(this._formatValue(value));
+                }
             }
 
             if (identifier === 'mem' && this.mem && this.config.memMonitoringEnabled) {
-                this.mem.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
-                    this.config.basePath,
-                    this.config.iconTheme,
-                    'mem',
-                    roundedVal
-                ));
+                if (roundedVal !== this._lastMemRounded) {
+                    this._lastMemRounded = roundedVal;
+                    this.mem.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
+                        this.config.basePath,
+                        this.config.iconTheme,
+                        'mem',
+                        roundedVal
+                    ));
+                }
+                if (this.memLabel && this.config.memLabelEnabled) {
+                    this.memLabel.set_text(this._formatValue(value));
+                }
             }
+        }
+
+        public resetIconCache(): void {
+            this._lastProcRounded = '';
+            this._lastMemRounded = '';
         }
 
         public destroy(): void {
@@ -148,6 +218,10 @@ export const StatistigSystemIndicators = GObject.registerClass(
         }
 
         public destroyProcIndicator(): void {
+            if (this.procLabel) {
+                this.procLabel.destroy();
+                this.procLabel = null;
+            }
             if (this.proc) {
                 this.proc.destroy();
                 this.proc = null;
@@ -155,12 +229,36 @@ export const StatistigSystemIndicators = GObject.registerClass(
         }
 
         public destroyMemIndicator(): void {
+            if (this.memLabel) {
+                this.memLabel.destroy();
+                this.memLabel = null;
+            }
             if (this.mem) {
                 this.mem.destroy();
                 this.mem = null;
             }
         }
-        
+
+        private _applyLabelStyle(label: St.Label): void {
+            if (!this.config) { return }
+            let style = '';
+            if (this.config.labelMonospace) {
+                style += 'font-family: monospace;';
+            }
+            label.set_style(style || null);
+        }
+
+        private _formatValue(value: number): string {
+            if (!this.config) { return '' }
+            const text = `${value}%`;
+            if (this.config.labelFixedWidth) {
+                if (this.config.labelAlignment === 'left') {
+                    return text.padEnd(4, ' ');
+                }
+                return text.padStart(4, ' ');
+            }
+            return text;
+        }
     }
 );
 

@@ -57,9 +57,9 @@ export const StatistigMonitor = GObject.registerClass(
       }
     }
 
-    private async _update(): Promise<void> {
+    private _update(): void {
       try {
-        const stat = await new File('/proc/stat').read();
+        const stat = new File('/proc/stat').readSync();
         const cpuLine = stat.split('\n')[0];
         const match = cpuLine.match(/^cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/);
         if (match) {
@@ -71,12 +71,12 @@ export const StatistigMonitor = GObject.registerClass(
           this._prevIdle = idle;
           const total = usedDiff + idleDiff;
           const cpu = total === 0 ? 0 : Math.round((usedDiff / total) * 100);
-          
+
           this._cpu = cpu;
           this.notify('cpu-usage');
         }
 
-        const meminfo = await new File('/proc/meminfo').read();
+        const meminfo = new File('/proc/meminfo').readSync();
         let total = 1, available = 0;
         for (const line of meminfo.split('\n')) {
           if (line.startsWith('MemTotal:')) {
@@ -86,7 +86,7 @@ export const StatistigMonitor = GObject.registerClass(
           }
         }
         const mem = Math.round(((total - available) / total) * 100);
-        
+
         this._mem = mem;
         this.notify('ram-usage');
       } catch (e) {

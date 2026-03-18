@@ -26,9 +26,7 @@ import { StatistigConfig } from './config.js';
 import { StatistigIcons } from './icons.js';
 import { StatistigSystemIndicators } from './indicators.js';
 import { StatistigMonitor } from './monitor.js';
-import { StatistigSwitchMenu } from './switch.js';
 import { StatistigConnections } from './connections.js';
-import { StatistigSystemButtons } from './buttons.js';
 
 export const StatistigQuickMenuToggle = GObject.registerClass(
     class StatistigQuickMenuToggle extends QuickSettings.QuickMenuToggle {
@@ -37,7 +35,6 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
         public monitor: StatistigMonitor | null = null;
         public indicators: StatistigSystemIndicators | null = null;
         public connections: StatistigConnections | null = null;
-        public buttons: StatistigSystemButtons | null = null;
 
         _init(params?: Partial<QuickSettings.QuickMenuToggle.ConstructorProps>): void {
             super._init(params);
@@ -51,7 +48,7 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             ins.title = StatistigConstants.QuickMenuToggleTitle;
             ins.gicon = StatistigIcons.getStatistigSymbolicIcon(config.basePath);
             ins.menuEnabled = true;
-            
+
             ins.menu.setHeader(StatistigIcons.getStatistigSymbolicIcon(config.basePath), 'Statistig');
             ins.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
             ins.menu.addAction(_("Statistig Settings"), () => {
@@ -61,7 +58,7 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             ins.connections.toggle.push(
                 ins.connect('clicked', ins.toggle)
             );
-            
+
             return ins;
         }
 
@@ -72,21 +69,18 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
                 this.monitor.connect('notify::cpu-usage', () => {
                     const cpu = this.monitor!.cpu_usage;
                     this.indicators?.update('proc', cpu);
-                    this.buttons?.update('proc', cpu);
                 }),
                 this.monitor.connect('notify::ram-usage', () => {
                     const mem = this.monitor!.ram_usage;
                     this.indicators?.update('mem', mem);
-                    this.buttons?.update('mem', mem);
                 })
             );
 
             this.connections.config.push(
                 this.config.connect('icon-theme', () => {
+                    this.indicators?.resetIconCache();
                     this.indicators?.update('proc', this.monitor?.cpu_usage ?? 0);
                     this.indicators?.update('mem', this.monitor?.ram_usage ?? 0);
-                    this.buttons?.update('proc', this.monitor?.cpu_usage ?? 0);
-                    this.buttons?.update('mem', this.monitor?.ram_usage ?? 0);
                 })
             );
         }
@@ -97,26 +91,27 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
                     const c = this.connections.config[i];
                     this.config?.disconnect(c);
                 }
+                this.connections.config.length = 0;
                 for (let i = 0; i < this.connections.monitor.length; i++) {
                     const c = this.connections.monitor[i];
                     this.monitor?.disconnect(c);
                 }
+                this.connections.monitor.length = 0;
                 if (complete) {
-                    for (let i = 0; i < this.connections!.toggle.length; i++) {
-                        const c = this.connections!.toggle[i];
+                    for (let i = 0; i < this.connections.toggle.length; i++) {
+                        const c = this.connections.toggle[i];
                         this.disconnect(c);
                     }
+                    this.connections.toggle.length = 0;
                 }
             }
         }
 
         public destroy(): void {
+            this.unbind();
             this.destroyMonitor();
             this.destroyIndicators();
-            this.destroyButtons();
-            this.unbind();
             super.destroy();
-
         }
 
         public destroyMonitor(): void {
@@ -133,13 +128,6 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
             }
         }
 
-        public destroyButtons(): void {
-            if (this.buttons) {
-                this.buttons.destroy();
-                this.buttons = null;
-            }
-        }
-
         public toggle(_source: StatistigQuickMenuToggle, clicked_button: number) {
             _source.set_checked(!_source.get_checked());
 
@@ -147,19 +135,15 @@ export const StatistigQuickMenuToggle = GObject.registerClass(
                 _source.indicators = StatistigSystemIndicators.create(_source.config!);
                 _source.indicators.show();
 
-                _source.buttons = StatistigSystemButtons.create(_source.config!);
-                _source.buttons.show();
-
                 _source.monitor = new StatistigMonitor();
                 _source.monitor?.start();
 
                 _source.bind();
 
             } else {
-                _source.destroyMonitor();
-                _source.destroyButtons();
-                _source.destroyIndicators();
                 _source.unbind(false);
+                _source.destroyMonitor();
+                _source.destroyIndicators();
             }
         }
     }

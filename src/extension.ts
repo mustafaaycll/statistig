@@ -36,7 +36,7 @@ export default class Statistig extends Extension {
         }
 
         this.quickMenuToggle = StatistigQuickMenuToggle.create(this.config);
-        
+
         this.registerQuickMenuToggle();
         this.quickMenuToggle.emit('clicked', 0);
     }

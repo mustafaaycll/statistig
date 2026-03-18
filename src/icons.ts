@@ -25,10 +25,6 @@ export class StatistigIcons {
         return Gio.icon_new_for_string(`${basePath}${StatistigConstants.IconsPath}${StatistigConstants.StatistigIconName}`);
     }
 
-    static getStatistigThemeSymbolicIcon(basePath: string): Gio.Icon {
-        return Gio.icon_new_for_string(`${basePath}${StatistigConstants.IconsPath}${StatistigConstants.StatistigThemeIconName}`);
-    }
-
     static getSystemIndicatorSymbolicIcon(basePath: string, iconTheme: string, identifier: string, percentage: string | null): Gio.Icon {
         const iconPackPath: string = `${basePath}${StatistigConstants.IconsPath}symbolic/${iconTheme}/${identifier}/`;
         let iconName: string = `${identifier}-`;

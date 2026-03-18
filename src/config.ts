@@ -55,14 +55,6 @@ export class StatistigConfig {
         this._settings.set_boolean('proc-mon-enabled', v);
     }
 
-    get procButtonEnabled(): boolean {
-        return this._settings.get_boolean('proc-btn-enabled');
-    }
-
-    set procButtonEnabled(v: boolean) {
-        this._settings.set_boolean('proc-btn-enabled', v);
-    }
-
     get memMonitoringEnabled(): boolean {
         return this._settings.get_boolean('mem-mon-enabled');
     }
@@ -71,44 +63,44 @@ export class StatistigConfig {
         this._settings.set_boolean('mem-mon-enabled', v);
     }
 
-    get memButtonEnabled(): boolean {
-        return this._settings.get_boolean('mem-btn-enabled');
+    get procLabelEnabled(): boolean {
+        return this._settings.get_boolean('proc-lbl-enabled');
     }
 
-    set memButtonEnabled(v: boolean) {
-        this._settings.set_boolean('mem-btn-enabled', v);
+    set procLabelEnabled(v: boolean) {
+        this._settings.set_boolean('proc-lbl-enabled', v);
     }
 
-    get batteryButtonStyled(): boolean {
-        return this._settings.get_boolean('bat-btn-styled');
+    get memLabelEnabled(): boolean {
+        return this._settings.get_boolean('mem-lbl-enabled');
     }
 
-    set batteryButtonStyled(v: boolean) {
-        this._settings.set_boolean('bat-btn-styled', v);
+    set memLabelEnabled(v: boolean) {
+        this._settings.set_boolean('mem-lbl-enabled', v);
     }
 
-    get screenshotButtonHidden(): boolean {
-        return this._settings.get_boolean('scs-btn-hidden');
+    get labelMonospace(): boolean {
+        return this._settings.get_boolean('lbl-monospace');
     }
 
-    set screenshotButtonHidden(v: boolean) {
-        this._settings.set_boolean('scs-btn-hidden', v);
+    set labelMonospace(v: boolean) {
+        this._settings.set_boolean('lbl-monospace', v);
     }
 
-    get settingsButtonHidden(): boolean {
-        return this._settings.get_boolean('stn-btn-hidden');
+    get labelFixedWidth(): boolean {
+        return this._settings.get_boolean('lbl-fixed-width');
     }
 
-    set settingsButtonHidden(v: boolean) {
-        this._settings.set_boolean('stn-btn-hidden', v);
+    set labelFixedWidth(v: boolean) {
+        this._settings.set_boolean('lbl-fixed-width', v);
     }
 
-    get lockButtonHidden(): boolean {
-        return this._settings.get_boolean('lck-btn-hidden');
+    get labelAlignment(): string {
+        return this._settings.get_string('lbl-alignment');
     }
 
-    set lockButtonHidden(v: boolean) {
-        this._settings.set_boolean('lck-btn-hidden', v);
+    set labelAlignment(v: string) {
+        this._settings.set_string('lbl-alignment', v);
     }
 
     connect(
@@ -116,13 +108,12 @@ export class StatistigConfig {
             | 'base-path'
             | 'icon-theme'
             | 'proc-mon-enabled'
-            | 'proc-btn-enabled'
             | 'mem-mon-enabled'
-            | 'mem-btn-enabled'
-            | 'bat-btn-styled'
-            | 'scs-btn-hidden'
-            | 'stn-btn-hidden'
-            | 'lck-btn-hidden',
+            | 'proc-lbl-enabled'
+            | 'mem-lbl-enabled'
+            | 'lbl-monospace'
+            | 'lbl-fixed-width'
+            | 'lbl-alignment',
         callback: () => void
     ): number {
         return this._settings.connect(`changed::${identifier}`, callback);

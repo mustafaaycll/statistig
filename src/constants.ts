@@ -18,9 +18,8 @@
 export class StatistigConstants {
     static readonly IconsPath = "/icons/";
     static readonly StatistigIconName = "statistig-symbolic.svg"
-    static readonly StatistigThemeIconName = "brush-symbolic.svg"
 
     static readonly QuickMenuToggleTitle = "Statistig";
 
-    static readonly IconPacks = ["adwaita", "papirus"];
+    static readonly IconPacks = ["adwaita", "papirus", "yaru"];
 }

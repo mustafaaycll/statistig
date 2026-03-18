@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import * as esbuild from 'esbuild';
+import * as esbuild from 'esbuild-wasm';
 
 esbuild.build({
     entryPoints: ['src/**/*.ts'],

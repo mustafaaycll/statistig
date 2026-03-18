@@ -37,7 +37,7 @@ export class File {
     try {
       exists = this.file.query_exists(null);
     } catch (err) {
-      console.error(`[TopHat] Error reading ${this.file.get_path()}: ${err}`);
+      console.error(`[Statistig] Error reading ${this.file.get_path()}: ${err}`);
     }
     return exists;
   }
@@ -49,7 +49,7 @@ export class File {
           try {
             const bytes = file?.load_contents_finish(res)[1];
             if (!bytes) {
-              reject('count not load file');
+              reject('could not load file');
               return;
             }
             // Replace null separators with spaces (e.g., to read proc_pid_cmdline)
@@ -85,27 +85,9 @@ export class File {
       contents = decoder.decode(bytes).trim();
     } catch (e: unknown) {
       if (reportErrs) {
-        console.error(`[TopHat] Error reading ${this.file.get_path()}: ${e}`);
+        console.error(`[Statistig] Error reading ${this.file.get_path()}: ${e}`);
       }
     }
     return contents;
-  }
-
-  public listSync(): string[] {
-    const children = new Array<string>();
-    const iter = this.file.enumerate_children(
-      Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-      Gio.FileQueryInfoFlags.NONE,
-      null
-    );
-    while (true) {
-      const fileInfo = iter.next_file(null);
-      if (fileInfo === null) {
-        break;
-      }
-      const name = fileInfo.get_name();
-      children.push(name);
-    }
-    return children;
   }
 }

@@ -44,11 +44,11 @@ export default class StatistigPrefs extends ExtensionPreferences {
             title: _('Settings'),
             iconName: 'preferences-system-symbolic',
         });
-    
+
         const appearanceGroup = new Adw.PreferencesGroup({
             title: _('Appearance'),
         });
-    
+
         const availableIconPacks = StatistigConstants.IconPacks;
         const selectedIconPack = config.iconTheme;
         const iconPackList = new Gtk.StringList();
@@ -64,57 +64,90 @@ export default class StatistigPrefs extends ExtensionPreferences {
         iconPackRow.connect('notify::selected-item', () => {
             config.iconTheme = availableIconPacks[iconPackRow.selected];
         });
-    
+
         appearanceGroup.add(iconPackRow);
 
         const behaviorGroup = new Adw.PreferencesGroup({
             title: _('Behavior'),
         });
 
-        const booleanSettings: { key: keyof StatistigConfig, title: string }[] = [
+        const behaviorSettings: { key: keyof StatistigConfig, title: string }[] = [
             { key: 'procMonitoringEnabled', title: _('Show processor indicator in status area') },
-            { key: 'procButtonEnabled',     title: _('Show processor button in quick settings') },
             { key: 'memMonitoringEnabled',  title: _('Show memory indicator in status area') },
-            { key: 'memButtonEnabled',      title: _('Show memory button in quick settings') },
-            { key: 'batteryButtonStyled',   title: _('Enforce styling on battery button in quick settings') },
-            { key: 'screenshotButtonHidden',title: _('Hide screenshot button in quick settings') },
-            { key: 'settingsButtonHidden',  title: _('Hide settings button in quick settings') },
-            { key: 'lockButtonHidden',      title: _('Hide lock button in quick settings') },
         ];
 
-        for (const { key, title } of booleanSettings) {
-            const row = new Adw.ActionRow({
-                title: title,
-            });
-
+        for (const { key, title } of behaviorSettings) {
+            const row = new Adw.ActionRow({ title });
             const toggle = new Gtk.Switch({
                 active: config[key] as boolean,
                 valign: Gtk.Align.CENTER,
             });
-
             toggle.connect('notify::active', () => {
                 // @ts-ignore: accessing a read-only setter by key is normally forbidden in TS
                 config[key] = toggle.active;
             });
-
             row.add_suffix(toggle);
             row.activatable_widget = toggle;
             behaviorGroup.add(row);
         }
 
+        const labelGroup = new Adw.PreferencesGroup({
+            title: _('Labels'),
+        });
+
+        const labelSettings: { key: keyof StatistigConfig, title: string }[] = [
+            { key: 'procLabelEnabled',  title: _('Show numeric label next to processor indicator') },
+            { key: 'memLabelEnabled',   title: _('Show numeric label next to memory indicator') },
+            { key: 'labelMonospace',    title: _('Use monospace font for labels') },
+            { key: 'labelFixedWidth',   title: _('Use fixed-width formatting for labels') },
+        ];
+
+        for (const { key, title } of labelSettings) {
+            const row = new Adw.ActionRow({ title });
+            const toggle = new Gtk.Switch({
+                active: config[key] as boolean,
+                valign: Gtk.Align.CENTER,
+            });
+            toggle.connect('notify::active', () => {
+                // @ts-ignore: accessing a read-only setter by key is normally forbidden in TS
+                config[key] = toggle.active;
+            });
+            row.add_suffix(toggle);
+            row.activatable_widget = toggle;
+            labelGroup.add(row);
+        }
+
+        const alignmentOptions = ['left', 'right'];
+        const alignmentList = new Gtk.StringList();
+        for (const opt of alignmentOptions) {
+            alignmentList.append(opt.charAt(0).toUpperCase() + opt.slice(1));
+        }
+
+        const alignmentRow = new Adw.ComboRow({
+            title: _('Label text alignment'),
+            subtitle: _('Only applies when fixed-width formatting is enabled'),
+            model: alignmentList,
+        });
+        alignmentRow.selected = alignmentOptions.indexOf(config.labelAlignment) ?? 1;
+        alignmentRow.connect('notify::selected-item', () => {
+            config.labelAlignment = alignmentOptions[alignmentRow.selected];
+        });
+        labelGroup.add(alignmentRow);
+
         settingsPage.add(appearanceGroup);
         settingsPage.add(behaviorGroup);
+        settingsPage.add(labelGroup);
 
         return settingsPage;
     }
-    
+
 
     private buildAboutPage(config: StatistigConfig): Adw.PreferencesPage {
         const aboutPage = new Adw.PreferencesPage({
             title: _('About'),
             iconName: 'org.gnome.Settings-about-symbolic',
         });
-    
+
         const infoBox = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 12,
@@ -124,12 +157,12 @@ export default class StatistigPrefs extends ExtensionPreferences {
             margin_end: 32,
             halign: Gtk.Align.CENTER,
         });
-    
+
         const extensionIcon = new Gtk.Image({
             gicon: StatistigIcons.getStatistigSymbolicIcon(config.basePath),
             pixel_size: 64,
         });
-    
+
         const extensionName = new Gtk.Label({
             label: 'Statistig',
             css_classes: ['title-1'],
@@ -141,7 +174,7 @@ export default class StatistigPrefs extends ExtensionPreferences {
             css_classes: ['title-2'],
             justify: Gtk.Justification.CENTER
         });
-    
+
         const extensionAuthor = new Gtk.Label({
             label: _('authored by Mustafa Yücel'),
             justify: Gtk.Justification.CENTER,
@@ -151,22 +184,22 @@ export default class StatistigPrefs extends ExtensionPreferences {
             'https://github.com/mustafaaycll/statistig',
             _('View on GitHub'),
         );
-    
+
         infoBox.append(extensionIcon);
         infoBox.append(extensionName);
         infoBox.append(extensionDescription);
         infoBox.append(extensionAuthor);
         infoBox.append(externalLink);
-    
+
         const infoRow = new Adw.ActionRow({
             activatable: false,
             selectable: false,
         });
         infoRow.set_child(infoBox);
-    
+
         const infoGroup = new Adw.PreferencesGroup();
         infoGroup.add(infoRow);
-    
+
         aboutPage.add(infoGroup);
         return aboutPage;
     }

@@ -109,6 +109,17 @@ export class StatistigSwitchMenu {
         this.connections.mem = this.mem.connect('toggled', this.toggle);
     }
 
+    public disconnect() {
+        if (this.connections.proc !== null) {
+            this.proc.disconnect(this.connections.proc);
+            this.connections.proc = null;
+        }
+        if (this.connections.mem !== null) {
+            this.mem.disconnect(this.connections.mem);
+            this.connections.mem = null;
+        }
+    }
+
     public update() {
         this.proc.updateIcon();
         this.mem.updateIcon();
