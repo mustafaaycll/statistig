@@ -60,4 +60,4 @@ The Adwaita icons located in `resources/icons` and `src/icons` are either used a
 
 The Papirus icons located in `resources/icons` and `src/icons` are either used as-is or are derivative works based on assets from the [Papirus Icon Theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme). They are licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
 
-
+The Yaru icons located in `resources/icons` and `src/icons` are either used as-is or are derivative works based on assets from the [Yaru Icon Theme](https://github.com/ubuntu/yaru). They are licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
