@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Statistig is a GNOME Shell extension (TypeScript) that displays real-time CPU and memory usage in the GNOME status area / quick settings panel. Targets GNOME 47–48.
+Statistig is a GNOME Shell extension (TypeScript) that displays real-time CPU and memory usage in the status area of the GNOME top bar, next to the system indicators and quick settings. Targets GNOME 48–50 (`shell-version` in `metadata.json`), with GNOME 51 support planned.
+
+The extension deliberately follows GNOME's design guidelines: indicators belong only in the status area. Never add widgets to other parts of the panel (left/center boxes or the gaps between panel elements).
 
 ## Commands
 
@@ -24,7 +26,7 @@ There are no automated tests. Validation is type check only (`npm run check:type
 The extension lifecycle flows through `extension.ts` → `toggle.ts` (StatistigQuickMenuToggle), which owns and coordinates:
 
 - **`monitor.ts`** — GObject polling `/proc/stat` and `/proc/meminfo` every second; emits `notify::cpu-usage` and `notify::ram-usage` signals
-- **`indicators.ts`** — Adds icon indicators (with optional numeric labels) to the GNOME status bar
+- **`indicators.ts`** — Adds icon indicators (with optional numeric labels) to the status area via `Main.panel.statusArea.quickSettings.addExternalIndicator`
 - **`config.ts`** — Typed wrapper around `Gio.Settings` (GSettings schema in `src/schemas/`)
 - **`connections.ts`** — Tracks all signal connections for clean teardown on disable
 - **`prefs.ts`** — Settings UI (separate process from the shell extension)
@@ -49,6 +51,16 @@ Each theme has distinct visual characteristics:
 ### Translations
 
 Translation files are in `po/`. Supported locales: bg, de, el, en_UK, en_US, es, fr, it, tr. The `LINGUAS` file lists enabled locales. The `.pot` template must stay in sync with translatable strings in source (grep for `_('...')` calls).
+
+## API reference (`guide/`)
+
+`guide/` holds an offline Markdown mirror of https://gjs-docs.gnome.org. Consult it before guessing at GJS/GObject APIs.
+
+- `guide/docs/<library>/README.md` — full symbol index for a library (grep here first); one `<page>.md` per class, e.g. `guide/docs/st16/st.icon.md#method-set_gicon`
+- `guide/libraries.txt` — allowlist of mirrored libraries: GJS guide, St and Clutter for GNOME 48–51 (versions 16–19; 16 = GNOME 48), GObject, GLib, Gio, Gtk 4, Adw 1
+- `./guide/sync.sh` — syncs the allowlist and deletes everything else; `--list` shows all upstream libraries, `--force` re-downloads
+
+The generated files (`guide/docs/`, `guide/libraries.json`, `guide/.manifest.json`) are gitignored, so run `./guide/sync.sh` after a fresh clone. `.cbmignore` keeps `guide/` out of the codebase-memory index.
 
 ## Key constraints
 

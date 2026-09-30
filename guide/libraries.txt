@@ -1,0 +1,21 @@
+# Libraries mirrored by sync.sh (glob patterns matched against slugs; see ./sync.sh --list).
+# Anything not matched here is deleted from docs/ on the next full sync.
+#
+# Shell-side versions follow GNOME Shell: 16 = GNOME 48, 17 = 49, 18 = 50, 19 = 51.
+# Versions not yet published upstream are picked up automatically once they appear.
+
+# GJS runtime guide (modules, signals, gettext, timers, console)
+gjs
+
+# GNOME Shell process (extension.ts, indicators, quick settings)
+st1[6-9]~*
+clutter1[6-9]~*
+
+# Shared GObject platform
+gobject20~*
+glib20~*
+gio20~*
+
+# Preferences process (prefs.ts)
+gtk40~*
+adw1~*

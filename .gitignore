@@ -10,3 +10,7 @@ node_modules/
 .vscode
 .claude
 tokens.txt
+# Generated GJS docs mirror (regenerate with guide/sync.sh)
+guide/docs/
+guide/libraries.json
+guide/.manifest.json
