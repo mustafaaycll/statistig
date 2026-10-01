@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Statistig\n"
 "Report-Msgid-Bugs-To: https://github.com/mustafaaycll/statistig/issues\n"
-"POT-Creation-Date: 2026-09-30 14:04+0300\n"
+"POT-Creation-Date: 2026-10-01 17:53+0300\n"
 "PO-Revision-Date: 2025-05-15 16:54\n"
 "Last-Translator: Mustafa Yücel <mustafayucel.cs@gmail.com>\n"
 "Language-Team: none\n"
@@ -48,6 +48,14 @@ msgstr "Use monospace font for labels"
 
 msgid "Use fixed-width formatting for labels"
 msgstr "Use fixed-width formatting for labels"
+
+#. Translators: label text alignment option
+msgid "Left"
+msgstr "Left"
+
+#. Translators: label text alignment option
+msgid "Right"
+msgstr "Right"
 
 msgid "Label text alignment"
 msgstr "Label text alignment"

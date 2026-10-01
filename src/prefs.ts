@@ -52,7 +52,11 @@ export default class StatistigPrefs extends ExtensionPreferences {
                 settings,
                 window,
                 'icon-theme',
-                StatistigConstants.IconPacks,
+                // Icon pack names are proper nouns and stay untranslated.
+                StatistigConstants.IconPacks.map((pack) => ({
+                    value: pack,
+                    label: pack.charAt(0).toUpperCase() + pack.slice(1),
+                })),
                 {title: _('Icon Pack')},
             ),
         );
@@ -94,7 +98,12 @@ export default class StatistigPrefs extends ExtensionPreferences {
                 settings,
                 window,
                 'lbl-alignment',
-                ['left', 'right'],
+                [
+                    // Translators: label text alignment option
+                    {value: 'left', label: _('Left')},
+                    // Translators: label text alignment option
+                    {value: 'right', label: _('Right')},
+                ],
                 {
                     title: _('Label text alignment'),
                     subtitle: _(
@@ -131,12 +140,13 @@ export default class StatistigPrefs extends ExtensionPreferences {
         settings: Gio.Settings,
         window: Adw.PreferencesWindow,
         key: string,
-        options: readonly string[],
+        choices: readonly {value: string; label: string}[],
         props: {title: string; subtitle?: string},
     ): Adw.ComboRow {
+        const options = choices.map((choice) => choice.value);
         const model = new Gtk.StringList();
-        for (const option of options) {
-            model.append(option.charAt(0).toUpperCase() + option.slice(1));
+        for (const {label} of choices) {
+            model.append(label);
         }
         const row = new Adw.ComboRow({...props, model});
 
