@@ -15,12 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
-import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 
 const decoder = new TextDecoder('utf-8');
 
-/** Reads a small text file (e.g. under /proc) synchronously. Throws on failure. */
-export function readTextFile(path: string): string {
-    const [, contents] = GLib.file_get_contents(path);
-    return decoder.decode(contents);
+/**
+ * Reads a small text file (e.g. under /proc) without blocking the shell.
+ * Rejects on failure, including cancellation.
+ */
+export function readTextFile(
+    path: string,
+    cancellable: Gio.Cancellable | null = null,
+): Promise<string> {
+    const file = Gio.File.new_for_path(path);
+    return new Promise((resolve, reject) => {
+        file.load_contents_async(cancellable, (_source, result) => {
+            try {
+                const [, contents] = file.load_contents_finish(result);
+                resolve(decoder.decode(contents));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
 }
