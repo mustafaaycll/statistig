@@ -17,10 +17,11 @@ npm run build:dev          # Build, install, and print how to load it (nested sh
 npm run format             # Prettier: rewrite src/ and scripts/ in place
 npm run check:format       # Prettier: check src/ and scripts/ without writing
 npm run check:types        # TypeScript type check (no emit)
+npm run check:lint         # ESLint with GNOME Shell's rules (eslint-config-gnome) + typescript-eslint
 npm run translations:update  # Update .po translation files
 ```
 
-There are no automated tests. Validation is `npm run check:types` and `npm run check:format`; runtime behaviour needs a manual check in a GNOME session.
+There are no automated tests. Validation is `npm run check:types`, `npm run check:lint` and `npm run check:format` (the build runs the first two); runtime behaviour needs a manual check in a GNOME session.
 
 ## Architecture
 
@@ -72,8 +73,9 @@ The generated files (`guide/docs/`, `guide/libraries.json`, `guide/.manifest.jso
 - **GNOME Shell JS environment**: No Node.js APIs. Use GLib/Gio for I/O. All imports are GNOME introspection (`gi://`) or relative TypeScript modules.
 - **TypeScript strict mode** is enabled, plus `noUnusedLocals`, `noUnusedParameters`, `noImplicitOverride` (mark overridden `enable`/`disable`/`destroy`/`vfunc_*` members with `override`), `noFallthroughCasesInSwitch` and `forceConsistentCasingInFileNames`. Run `npm run check:types` before committing; don't silence errors with `@ts-ignore`.
 - Type definitions come from `@girs/gnome-shell` (GNOME 50 line); `@girs/gjs` must stay on the 4.x line required by it.
-- GObject subclasses without `Properties`/`Signals` meta info (`StatistigSystemIndicators`, `StatistigQuickMenuToggle`) are declared as `export class X extends ... { static { GObject.registerClass(this); } constructor(...) { super(...); ... } }`. This keeps the class type intact, whereas the `@girs` type of `const X = GObject.registerClass(class X ...)` drops static members. Classes with meta info (`StatistigMonitor`) keep the two-argument form so their properties stay typed.
+- GObject subclasses are declared as `export class X extends ... { static { GObject.registerClass(this); } ... }` (or `GObject.registerClass({GTypeName, Properties, ...}, this)` when they need meta info, as `StatistigMonitor` does). Don't use `const X = GObject.registerClass(class X ...)`: its `@girs` type drops static members and ESLint flags the shadowed name.
 - `disable()` must undo everything `enable()` did and stay synchronous (GNOME 51 throws on an async `disable()`).
 - Don't override `vfunc_dispose`/`vfunc_finalize` in JS GObject subclasses: they run during garbage collection, where GJS blocks them and logs "Attempting to run a JS callback during garbage collection". Do cleanup explicitly from `destroy()` (e.g. `StatistigMonitor.stop()`).
-- **esbuild** (not tsc) produces the final JS output in ESM format. The `scripts/esbuild.js` config controls bundling.
+- **esbuild** (not tsc) produces the final JS output in ESM format. The `scripts/esbuild.js` config controls bundling; esbuild drops comments, so it adds a GPL notice banner to every output file.
+- **Shipped attribution**: the icons derive from Adwaita, Papirus and Yaru; `src/icons/ATTRIBUTION.md` ships in the zip and must stay in sync with the README credits.
 - The preferences UI (`prefs.ts`) runs in a separate process from the shell extension — avoid shared mutable state.

@@ -4,8 +4,9 @@
     "build": "./scripts/build.sh",
     "build:dev": "./scripts/build.sh --unsafe-reload",
     "build:install": "./scripts/build.sh --install",
-    "check:format": "prettier --check \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js",
-    "format": "prettier --write \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js",
+    "check:format": "prettier --check \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js eslint.config.js",
+    "check:lint": "eslint .",
+    "format": "prettier --write \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js eslint.config.js",
     "check:types": "tsc -noEmit",
     "translations:update": "./scripts/update-translations.sh"
   },
@@ -14,7 +15,12 @@
     "@girs/gjs": "^4.9.0",
     "@girs/gnome-shell": "^50.0.4",
     "esbuild-wasm": "^0.28.2",
+    "eslint": "^9.39.5",
+    "eslint-config-gnome": "git+https://gitlab.gnome.org/World/javascript/eslint-config-gnome.git#c479d059e8d9ea99c3b53c2ea43abf7fdb05eb51",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
     "prettier": "^3.9.9",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.71.0"
   }
 }

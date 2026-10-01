@@ -24,7 +24,7 @@ Install Statistig from the [GNOME Shell Extensions page](https://extensions.gnom
 
 Statistig has been tested on the following systems
 
-* Fedora 42, 43, 44
+* Fedora 42, 43, 44, 45
 
 ## Manual Installation
 
@@ -50,7 +50,7 @@ Building needs Node.js and npm, plus gettext (`msgfmt`) to include translations.
 
 ## Development
 
-* `npm run check:types` type checks the code; `npm run check:format` checks formatting (`npm run format` fixes it).
+* `npm run check:types` type checks the code, `npm run check:lint` runs ESLint with GNOME Shell's rules, and `npm run check:format` checks formatting (`npm run format` fixes it).
 * `npm run translations:update` regenerates `po/statistig.pot` and updates the translations after changing user-visible strings.
 * To try a build without logging out, run `npm run build:dev` and start a nested GNOME Shell with `dbus-run-session gnome-shell --devkit --wayland` (GNOME 49 and newer) or `dbus-run-session gnome-shell --nested --wayland` (GNOME 48). See the [GJS guide](https://gjs.guide/extensions/development/debugging.html).
 

@@ -45,6 +45,9 @@ function build_extension_package() {
 	echo "Type checking..."
 	npm run --silent check:types
 
+	echo "Linting..."
+	npm run --silent check:lint
+
 	echo "Compiling TypeScript files..."
 	node ./scripts/esbuild.js
 	echo "Done."

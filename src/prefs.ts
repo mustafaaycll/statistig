@@ -28,11 +28,14 @@ import {StatistigConstants} from './constants.js';
 import {StatistigIcons} from './icons.js';
 
 export default class StatistigPrefs extends ExtensionPreferences {
-    override async fillPreferencesWindow(window: Adw.PreferencesWindow) {
+    override fillPreferencesWindow(
+        window: Adw.PreferencesWindow,
+    ): Promise<void> {
         const settings = this.getSettings();
         window.add(this.buildSettingsPage(settings, window));
         window.add(this.buildAboutPage());
         window.set_default_size(600, 400);
+        return Promise.resolve();
     }
 
     private buildSettingsPage(

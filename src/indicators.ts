@@ -51,6 +51,7 @@ export class StatistigSystemIndicators extends QuickSettings.SystemIndicator {
     private _indicators: Record<Identifier, Indicator>;
     private _configHandlers: number[] = [];
     private _monitorHandlers: number[] = [];
+    private _toggleHandler = 0;
 
     constructor(
         config: StatistigConfig,
@@ -74,7 +75,9 @@ export class StatistigSystemIndicators extends QuickSettings.SystemIndicator {
         config.bind('monitoring-enabled', this._toggle, 'checked');
 
         this._bind();
-        this._toggle.connect('notify::checked', () => this._syncActive());
+        this._toggleHandler = this._toggle.connect('notify::checked', () =>
+            this._syncActive(),
+        );
         this._syncActive();
     }
 
@@ -217,6 +220,7 @@ export class StatistigSystemIndicators extends QuickSettings.SystemIndicator {
         this._monitorHandlers = [];
         this._monitor.stop();
 
+        this._toggle.disconnect(this._toggleHandler);
         // The binding would otherwise live until the toggle is garbage collected.
         this._config.unbind(this._toggle, 'checked');
         for (const item of this.quickSettingsItems) {
