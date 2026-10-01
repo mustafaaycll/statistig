@@ -1,157 +1,98 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 # ==============================================================================
 # This script builds the zip package for the extension. It compiles translations
-# and resources, if there are any. It also installs the extension, if requested.
-# Use `--help` for more information.
+# and installs the extension, if requested. Use `--help` for more information.
 # ==============================================================================
 
-function compile_resources() {
-	echo "Creating resource xml..."
-
-	cat <<-EOF > "$RESOURCE_XML"
-		<?xml version='1.0' encoding='UTF-8'?>
-		<gresources>
-		  <gresource>
-				$(find data/ -type f | while read -r FILE; do
-					echo "    <file>${FILE#"data/"}</file>"
-				done)
-		  </gresource>
-		</gresources>
-	EOF
-
-	echo "Resource xml created."
-	echo "Compiling resources..."
-
-	glib-compile-resources \
-		--generate "$RESOURCE_XML" \
-		--sourcedir="data" \
-		--target="$RESOURCE_TARGET"
-
-	echo "Resources compiled."
-}
+set -euo pipefail
 
 function compile_translations() {
 	echo "Compiling translations..."
 
-	for PO_FILE in po/*.po; do
-		LANG=$(basename "$PO_FILE" .po)
-		mkdir -p "$JS_DIR/locale/$LANG/LC_MESSAGES"
-		msgfmt -c "$PO_FILE" -o "$JS_DIR/locale/$LANG/LC_MESSAGES/$UUID.mo"
-	done
+	while read -r LOCALE; do
+		# Skip empty lines and comments
+		[[ -z "$LOCALE" || "$LOCALE" == \#* ]] && continue
+
+		local PO_FILE="po/$LOCALE.po"
+		if [ ! -f "$PO_FILE" ]; then
+			echo "ERROR: '$LOCALE' is listed in po/LINGUAS but $PO_FILE doesn't exist. Exiting..."
+			exit 1
+		fi
+
+		mkdir -p "$JS_DIR/locale/$LOCALE/LC_MESSAGES"
+		msgfmt -c "$PO_FILE" -o "$JS_DIR/locale/$LOCALE/LC_MESSAGES/$UUID.mo"
+	done < po/LINGUAS
 
 	echo "Translations compiled."
 }
 
 function build_extension_package() {
-	# Compile TypeScript files, if used
-	if [ "$USING_TYPESCRIPT" = "true" ]; then
-		if ! (command -v npm &> /dev/null); then
-			echo "ERROR: npm isn't installed. Can't compile TypeScript files. Exiting..."
-			exit 1
-		fi
-
-		if find . -maxdepth 1 -type d | grep -q "dist"; then
-			echo "Removing old TypeScript dist/..."
-			rm -rf "$TYPESCRIPT_OUT_DIR"
-			echo "Done."
-		fi
-
-		if ! (find . -maxdepth 1 -type d | grep -q "node_modules"); then
-			echo "Installing dependencies from NPM to compile TypeScript..."
-			npm install > /dev/null
-			echo "Dependencies installed."
-		fi
-
-		echo "Compiling TypeScript files..."
-		if find scripts/ -type f | grep -q "esbuild.js"; then
-			node ./scripts/esbuild.js
-		else
-			npx tsc
-		fi
-		echo "Done."
-
-		if find src/ -type f | grep -qv ".ts"; then
-			echo "Copying non-TypeScript src files to the dist directory..."
-			(
-				cd src/
-				find . -type f ! -name '*.ts' | while read -r FILE; do
-					cp --parents "$FILE" ../dist/
-				done
-			)
-			echo "Done."
-		fi
+	if ! command -v npm &> /dev/null; then
+		echo "ERROR: npm isn't installed. Can't compile TypeScript files. Exiting..."
+		exit 1
 	fi
 
-	# Compile translations, if there are any
-	if (find po/ -type f | grep ".po$") &> /dev/null; then
-		if command -v msgfmt &> /dev/null; then
-			compile_translations
-		else
-			echo "WARNING: gettext isn't installed. Skipping compilation of translations..."
-		fi
+	if [ ! -d node_modules ]; then
+		echo "Installing dependencies from NPM to compile TypeScript..."
+		npm install > /dev/null
+		echo "Dependencies installed."
 	fi
 
-	# Compile resources, if there are any
-	if (find data/ -type f | grep ".") &> /dev/null; then
-		if command -v glib-compile-resources &> /dev/null; then
-			compile_resources
-		else
-			echo "ERROR: glib-compile-resources isn't installed. Resources won't be compiled. This may cause errors for the extension. Please install glib-compile-resources and rebuild the extension. Exiting..."
-			exit 1
-		fi
+	echo "Removing old $JS_DIR/..."
+	rm -rf "$JS_DIR"
+
+	echo "Type checking..."
+	npm run --silent check:types
+
+	echo "Compiling TypeScript files..."
+	node ./scripts/esbuild.js
+	echo "Done."
+
+	echo "Copying non-TypeScript src files to the $JS_DIR directory..."
+	find src -type f ! -name '*.ts' ! -name '.DS_Store' | while IFS= read -r FILE; do
+		local DEST="$JS_DIR/${FILE#src/}"
+		mkdir -p "$(dirname "$DEST")"
+		cp "$FILE" "$DEST"
+	done
+	echo "Done."
+
+	if command -v msgfmt &> /dev/null; then
+		compile_translations
+	else
+		echo "WARNING: gettext isn't installed. Skipping compilation of translations..."
 	fi
 
 	echo "Creating clean extension zip..."
 
 	# Build into temporary folder with flat structure
-	rm -rf _build_temp
+	rm -rf _build_temp "$UUID.shell-extension.zip"
 	mkdir -p _build_temp
 
-	cp -r "$JS_DIR"/* _build_temp/
-	cp metadata.json LICENSE "$RESOURCE_TARGET" _build_temp/ 2>/dev/null || true
+	cp -r "$JS_DIR"/. _build_temp/
+	cp metadata.json LICENSE _build_temp/
 
-	cd _build_temp
-	zip -qr "../$UUID.shell-extension.zip" .
-	cd ..
+	(
+		cd _build_temp
+		zip -qr "../$UUID.shell-extension.zip" .
+	)
 	rm -rf _build_temp
 
 	echo "Extension package zipped at: $UUID.shell-extension.zip"
 }
 
+function print_reload_instructions() {
+	cat <<-EOF
 
-function try_restarting_gnome_shell() {
-	# Initial check to see if we are running under Wayland. However, just cause
-	# the session type isn't "wayland" doesn't mean we are running under X11.
-	# We could be running something like a "tty" (e. g. via ssh).
-	if [ "$XDG_SESSION_TYPE" = wayland ]; then
-		echo "ERROR: Failed to restart GNOME Shell. You're on Wayland. Restarting GNOME Shell is not supported since it would also kill your entire session. Please use X11, or log out and log back in to apply the changes."
-
-		return 1
-	fi
-
-	echo "Trying to restart GNOME Shell to apply the changes..."
-
-	local js result
-
-	js='if (Meta.is_wayland_compositor()) throw new Error("Wayland detected"); \
-		else Meta.restart(_("Restarting…"), global.context);'
-
-	result=$(gdbus call \
-			--session \
-			--dest org.gnome.Shell \
-			--object-path /org/gnome/Shell \
-			--method org.gnome.Shell.Eval string:"$js")
-
-	if echo "$result" | grep -q "true"; then
-		echo "SUCCESS: Restart initiated."
-	elif echo "$result" | grep -q "Wayland detected"; then
-		echo "ERROR: Failed to restart GNOME Shell. You're on Wayland. Restarting GNOME Shell is not supported since it would also kill your entire session. Please use X11, or log out and log back in to apply the changes."
-	elif echo "$result" | grep -q "false"; then
-		echo "ERROR: Failed to restart GNOME Shell. It looks like you didn't enable GNOME's unsafe mode. Please make sure to enable it and that you're running GNOME on X11."
-	fi
-
-	return 0
+	GNOME Shell can't be restarted from a script on GNOME 49 and later (X11
+	sessions are gone), so load the new build in one of these ways:
+	  * Wayland, GNOME 49+:  dbus-run-session gnome-shell --devkit --wayland
+	  * Wayland, GNOME 48:   dbus-run-session gnome-shell --nested --wayland
+	    (runs a nested shell in a window; enable the extension inside it)
+	  * X11, GNOME 48 only:  press Alt+F2, type 'r' and press Enter
+	  * Otherwise:           log out and log back in
+	See https://gjs.guide/extensions/development/debugging.html
+	EOF
 }
 
 function install_extension_package() {
@@ -159,8 +100,8 @@ function install_extension_package() {
 	gnome-extensions install --force "$UUID".shell-extension.zip
 	echo "Extension installed."
 
-	if [ "$1" = "-r" ]; then
-		try_restarting_gnome_shell
+	if [ "${1:-}" = "-r" ]; then
+		print_reload_instructions
 	else
 		echo "Log out and log back in to apply the changes."
 		echo "After that, if you haven't enabled the extension yet, do so to start using it."
@@ -176,16 +117,9 @@ function usage() {
 
 	Options:
 	  -i, --install         Install the extension after building
-	  -r, --unsafe-reload   Build and install the extension, then reload GNOME
-	                        Shell. This is for development purposes as it restarts
-	                        GNOME Shell with an X11 session by relying on the eval
-	                        method. To use the eval method, you need to enable
-	                        GNOME's unsafe mode. So this options is intended for
-	                        safe environments. A dev workflow could look like this:
-	                        Create a VM running GNOME on X11. Create a shared
-	                        folder with your project in it. Develop on the host but
-	                        run the build script within the VM using this option to
-	                        quickly test your extension
+	  -r, --unsafe-reload   Build and install the extension, then explain how to
+	                        load the new build without logging out (nested
+	                        GNOME Shell on Wayland, or Alt+F2 'r' on GNOME 48 X11)
 	  -h, --help            Display this help message
 	EOF
 }
@@ -196,17 +130,8 @@ function usage() {
 
 cd -- "$( dirname "$0" )/../"
 
-UUID=$(grep -oP '"uuid": "\K[^"]+' metadata.json)
-RESOURCE_XML="$UUID.gresource.xml"
-RESOURCE_TARGET="$UUID.gresource"
-USING_TYPESCRIPT=$(find . -maxdepth 1 -type f | grep -q "tsconfig.json" && echo "true" || echo "false")
-TYPESCRIPT_OUT_DIR="dist"
-
-if [ "$USING_TYPESCRIPT" = "true" ]; then
-	JS_DIR="$TYPESCRIPT_OUT_DIR"
-else
-	JS_DIR="src"
-fi
+UUID=$(node -p "require('./metadata.json').uuid")
+JS_DIR="dist"
 
 if [ $# -eq 0 ]; then
 	build_extension_package

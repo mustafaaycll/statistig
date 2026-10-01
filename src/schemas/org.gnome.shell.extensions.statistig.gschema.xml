@@ -2,10 +2,10 @@
 <schemalist>
     <schema id="org.gnome.shell.extensions.statistig" path="/org/gnome/shell/extensions/statistig/">
 
-        <key name="base-path" type="s">
-            <default>'none'</default>
-            <summary>Extension base path to locate resources</summary>
-            <description>The absolute filesystem path to the installed extension folder. Used for locating internal resources like icons and schemas.</description>
+        <key name="monitoring-enabled" type="b">
+            <default>true</default>
+            <summary>Monitoring enabled</summary>
+            <description>Whether the quick settings toggle is on and the indicators are shown and updated.</description>
         </key>
 
         <key name="icon-theme" type="s">

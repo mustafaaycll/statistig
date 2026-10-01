@@ -17,136 +17,31 @@
 
 import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
-import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import GObject from 'gi://GObject';
 
-import { StatistigConstants } from './constants.js';
-import { StatistigConfig } from './config.js';
-import { StatistigIcons } from './icons.js';
-import { StatistigSystemIndicators } from './indicators.js';
-import { StatistigMonitor } from './monitor.js';
-import { StatistigConnections } from './connections.js';
+import {StatistigConstants} from './constants.js';
+import {StatistigIcons} from './icons.js';
 
-export const StatistigQuickMenuToggle = GObject.registerClass(
-    class StatistigQuickMenuToggle extends QuickSettings.QuickMenuToggle {
-
-        public config: StatistigConfig | null = null;
-        public monitor: StatistigMonitor | null = null;
-        public indicators: StatistigSystemIndicators | null = null;
-        public connections: StatistigConnections | null = null;
-
-        _init(params?: Partial<QuickSettings.QuickMenuToggle.ConstructorProps>): void {
-            super._init(params);
-        }
-
-        static create(config: StatistigConfig): StatistigQuickMenuToggle {
-            const ins = new this();
-
-            ins.config = config;
-            ins.connections = new StatistigConnections();
-            ins.title = StatistigConstants.QuickMenuToggleTitle;
-            ins.gicon = StatistigIcons.getStatistigSymbolicIcon(config.basePath);
-            ins.menuEnabled = true;
-
-            ins.menu.setHeader(StatistigIcons.getStatistigSymbolicIcon(config.basePath), 'Statistig');
-            ins.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-            ins.menu.addAction(_("Statistig Settings"), () => {
-                ins.config?.methods?.openPreferences();
-            });
-
-            ins.connections.toggle.push(
-                ins.connect('clicked', ins.toggle)
-            );
-
-            return ins;
-        }
-
-        public bind(): void {
-            if (!this.connections || !this.monitor || !this.config) { return }
-
-            this.connections.monitor.push(
-                this.monitor.connect('notify::cpu-usage', () => {
-                    const cpu = this.monitor!.cpu_usage;
-                    this.indicators?.update('proc', cpu);
-                }),
-                this.monitor.connect('notify::ram-usage', () => {
-                    const mem = this.monitor!.ram_usage;
-                    this.indicators?.update('mem', mem);
-                })
-            );
-
-            this.connections.config.push(
-                this.config.connect('icon-theme', () => {
-                    this.indicators?.resetIconCache();
-                    this.indicators?.update('proc', this.monitor?.cpu_usage ?? 0);
-                    this.indicators?.update('mem', this.monitor?.ram_usage ?? 0);
-                })
-            );
-        }
-
-        public unbind(complete: boolean = true): void {
-            if (this.connections) {
-                for (let i = 0; i < this.connections.config.length; i++) {
-                    const c = this.connections.config[i];
-                    this.config?.disconnect(c);
-                }
-                this.connections.config.length = 0;
-                for (let i = 0; i < this.connections.monitor.length; i++) {
-                    const c = this.connections.monitor[i];
-                    this.monitor?.disconnect(c);
-                }
-                this.connections.monitor.length = 0;
-                if (complete) {
-                    for (let i = 0; i < this.connections.toggle.length; i++) {
-                        const c = this.connections.toggle[i];
-                        this.disconnect(c);
-                    }
-                    this.connections.toggle.length = 0;
-                }
-            }
-        }
-
-        public destroy(): void {
-            this.unbind();
-            this.destroyMonitor();
-            this.destroyIndicators();
-            super.destroy();
-        }
-
-        public destroyMonitor(): void {
-            if (this.monitor) {
-                this.monitor.stop();
-                this.monitor = null;
-            }
-        }
-
-        public destroyIndicators(): void {
-            if (this.indicators) {
-                this.indicators.destroy();
-                this.indicators = null;
-            }
-        }
-
-        public toggle(_source: StatistigQuickMenuToggle, clicked_button: number) {
-            _source.set_checked(!_source.get_checked());
-
-            if (_source.get_checked()) {
-                _source.indicators = StatistigSystemIndicators.create(_source.config!);
-                _source.indicators.show();
-
-                _source.monitor = new StatistigMonitor();
-                _source.monitor?.start();
-
-                _source.bind();
-
-            } else {
-                _source.unbind(false);
-                _source.destroyMonitor();
-                _source.destroyIndicators();
-            }
-        }
+export class StatistigQuickMenuToggle extends QuickSettings.QuickMenuToggle {
+    static {
+        GObject.registerClass(this);
     }
-);
 
-export type StatistigQuickMenuToggle = InstanceType<typeof StatistigQuickMenuToggle>;
+    constructor(basePath: string, openPreferences: () => void) {
+        super({
+            title: StatistigConstants.QuickMenuToggleTitle,
+            gicon: StatistigIcons.getStatistigSymbolicIcon(basePath),
+            toggleMode: true,
+            menuEnabled: true,
+        });
+
+        this.menu.setHeader(
+            StatistigIcons.getStatistigSymbolicIcon(basePath),
+            'Statistig',
+        );
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        this.menu.addAction(_('Statistig Settings'), openPreferences);
+    }
+}

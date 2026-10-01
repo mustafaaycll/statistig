@@ -19,49 +19,28 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-import { StatistigQuickMenuToggle } from './toggle.js';
-import { StatistigConfig } from './config.js';
-import { StatistigMethods } from './methods.js';
-
+import {StatistigConfig} from './config.js';
+import {StatistigSystemIndicators} from './indicators.js';
 
 export default class Statistig extends Extension {
+    private _config: StatistigConfig | null = null;
+    private _indicator: StatistigSystemIndicators | null = null;
 
-    public config: StatistigConfig | null = null;
-    public quickMenuToggle: StatistigQuickMenuToggle | null = null;
-
-    enable() {
-        this.config = new StatistigConfig(this.getSettings(), new StatistigMethods(this));
-        if (this.config.basePath === 'none') {
-            this.config.basePath = this.path;
-        }
-
-        this.quickMenuToggle = StatistigQuickMenuToggle.create(this.config);
-
-        this.registerQuickMenuToggle();
-        this.quickMenuToggle.emit('clicked', 0);
+    override enable() {
+        this._config = new StatistigConfig(this.getSettings());
+        this._indicator = new StatistigSystemIndicators(
+            this._config,
+            this.path,
+            () => this.openPreferences(),
+        );
+        Main.panel.statusArea.quickSettings!.addExternalIndicator(
+            this._indicator,
+        );
     }
 
-    disable() {
-
-        if (this.quickMenuToggle) {
-            this.quickMenuToggle.destroy();
-            this.quickMenuToggle = null;
-        }
-
-        // Ensure that the below if block is the last thing to be called
-        if (this.config) {
-
-            if (this.config.basePath !== 'none') {
-                this.config.basePath = 'none';
-            }
-
-            this.config = null;
-        }
-    }
-
-    registerQuickMenuToggle(): void {
-        const quickSettings: any = Main.panel.statusArea.quickSettings;
-        const sibling: any = quickSettings._backgroundApps?.quickSettingsItems?.at(-1) ?? null;
-        quickSettings.menu.insertItemBefore(this.quickMenuToggle, sibling);
+    override disable() {
+        this._indicator?.destroy();
+        this._indicator = null;
+        this._config = null;
     }
 }

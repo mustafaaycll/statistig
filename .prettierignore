@@ -1,0 +1,9 @@
+dist/
+node_modules/
+guide/docs/
+guide/libraries.json
+guide/.manifest.json
+po/
+*.svg
+*.xml
+package-lock.json

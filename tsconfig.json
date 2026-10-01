@@ -6,8 +6,12 @@
     "moduleResolution": "nodenext",
     "outDir": "./dist",
     "isolatedModules": true,
-    "experimentalDecorators": true,
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
   "include": [

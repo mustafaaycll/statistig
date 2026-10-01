@@ -3,13 +3,15 @@
 #
 # Shell-side versions follow GNOME Shell: 16 = GNOME 48, 17 = 49, 18 = 50, 19 = 51.
 # Versions not yet published upstream are picked up automatically once they appear.
+# Version 6 targets GNOME 50-51 (18-19). 17 (GNOME 49) is kept as the closest
+# published fallback until 18 and 19 appear upstream; drop it once they do.
 
 # GJS runtime guide (modules, signals, gettext, timers, console)
 gjs
 
 # GNOME Shell process (extension.ts, indicators, quick settings)
-st1[6-9]~*
-clutter1[6-9]~*
+st1[7-9]~*
+clutter1[7-9]~*
 
 # Shared GObject platform
 gobject20~*

@@ -16,10 +16,10 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 export class StatistigConstants {
-    static readonly IconsPath = "/icons/";
-    static readonly StatistigIconName = "statistig-symbolic.svg"
+    static readonly IconsPath = '/icons/';
+    static readonly StatistigIconName = 'statistig-symbolic.svg';
 
-    static readonly QuickMenuToggleTitle = "Statistig";
+    static readonly QuickMenuToggleTitle = 'Statistig';
 
-    static readonly IconPacks = ["adwaita", "papirus", "yaru"];
+    static readonly IconPacks = ['adwaita', 'papirus', 'yaru'];
 }

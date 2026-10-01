@@ -411,7 +411,7 @@ def write_guide_readme(libraries):
         "",
         "- `docs/<dir>/README.md` — library metadata plus a full symbol index (grep here first)",
         "- `docs/<dir>/index.md` — the library's landing page",
-        "- `docs/<dir>/<page>.md` — one file per class, interface, enum, etc. (e.g. `docs/st16/st.icon.md`)",
+        "- `docs/<dir>/<page>.md` — one file per class, interface, enum, etc. (e.g. `docs/st17/st.icon.md`)",
         "- Method, property and signal anchors are preserved, e.g. `st.icon.md#method-set_gicon`",
         "",
         "GNOME Shell version mapping for the Shell-specific libraries (St, Shell, Meta, Clutter, Cogl, Mtk):",

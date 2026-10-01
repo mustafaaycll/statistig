@@ -17,15 +17,21 @@
 
 import Gio from 'gi://Gio';
 
-import { StatistigConstants } from './constants.js';
+import {StatistigConstants} from './constants.js';
 
 export class StatistigIcons {
-    
     static getStatistigSymbolicIcon(basePath: string): Gio.Icon {
-        return Gio.icon_new_for_string(`${basePath}${StatistigConstants.IconsPath}${StatistigConstants.StatistigIconName}`);
+        return Gio.icon_new_for_string(
+            `${basePath}${StatistigConstants.IconsPath}${StatistigConstants.StatistigIconName}`,
+        );
     }
 
-    static getSystemIndicatorSymbolicIcon(basePath: string, iconTheme: string, identifier: string, percentage: string | null): Gio.Icon {
+    static getSystemIndicatorSymbolicIcon(
+        basePath: string,
+        iconTheme: string,
+        identifier: string,
+        percentage: string | null,
+    ): Gio.Icon {
         const iconPackPath: string = `${basePath}${StatistigConstants.IconsPath}symbolic/${iconTheme}/${identifier}/`;
         let iconName: string = `${identifier}-`;
         if (percentage !== null) {
@@ -34,5 +40,4 @@ export class StatistigIcons {
         iconName = `${iconName}symbolic.svg`;
         return Gio.icon_new_for_string(`${iconPackPath}${iconName}`);
     }
-    
 }

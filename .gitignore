@@ -14,3 +14,7 @@ tokens.txt
 guide/docs/
 guide/libraries.json
 guide/.manifest.json
+_build_temp/
+
+# Local task backlog
+tasks/

@@ -16,27 +16,13 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 import Gio from 'gi://Gio';
-import { StatistigMethods } from './methods.js';
+import GObject from 'gi://GObject';
 
 export class StatistigConfig {
     private _settings: Gio.Settings;
-    private _methods: StatistigMethods | null;
 
-    constructor(settings: Gio.Settings, methods: StatistigMethods | null) {
+    constructor(settings: Gio.Settings) {
         this._settings = settings;
-        this._methods = methods;
-    }
-
-    get methods(): StatistigMethods | null {
-        return this._methods;
-    }
-
-    get basePath(): string {
-        return this._settings.get_string('base-path');
-    }
-
-    set basePath(v: string) {
-        this._settings.set_string('base-path', v);
     }
 
     get iconTheme(): string {
@@ -105,7 +91,6 @@ export class StatistigConfig {
 
     connect(
         identifier:
-            | 'base-path'
             | 'icon-theme'
             | 'proc-mon-enabled'
             | 'mem-mon-enabled'
@@ -114,9 +99,34 @@ export class StatistigConfig {
             | 'lbl-monospace'
             | 'lbl-fixed-width'
             | 'lbl-alignment',
-        callback: () => void
+        callback: () => void,
     ): number {
-        return this._settings.connect(`changed::${identifier}`, callback);
+        const handlerId = this._settings.connect(
+            `changed::${identifier}`,
+            callback,
+        );
+        // Gio.Settings only emits changed::<key> for keys that have been read
+        // since a handler was connected, so read it once here.
+        this._settings.get_value(identifier);
+        return handlerId;
+    }
+
+    /** Binds a settings key to a GObject property (Gio.SettingsBindFlags.DEFAULT). */
+    bind(
+        key: 'monitoring-enabled',
+        object: GObject.Object,
+        property: string,
+    ): void {
+        this._settings.bind(
+            key,
+            object,
+            property,
+            Gio.SettingsBindFlags.DEFAULT,
+        );
+    }
+
+    unbind(object: GObject.Object, property: string): void {
+        Gio.Settings.unbind(object, property);
     }
 
     disconnect(handlerId: number): void {

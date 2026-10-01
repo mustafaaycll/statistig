@@ -4,16 +4,17 @@
     "build": "./scripts/build.sh",
     "build:dev": "./scripts/build.sh --unsafe-reload",
     "build:install": "./scripts/build.sh --install",
-    "check:format": "prettier --check --no-error-on-unmatched-pattern src/**/*.{js,ts}",
+    "check:format": "prettier --check \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js",
+    "format": "prettier --write \"src/**/*.{js,ts}\" \"scripts/**/*.js\" prettier.config.js",
     "check:types": "tsc -noEmit",
     "translations:update": "./scripts/update-translations.sh"
   },
   "type": "module",
   "devDependencies": {
-    "@girs/gjs": "^4.0.0-beta.5",
-    "@girs/gnome-shell": "^46.0.0-beta8",
-    "esbuild-wasm": "^0.25.1",
-    "prettier": "^3.2.5",
-    "typescript": "^5.5.2"
+    "@girs/gjs": "^4.9.0",
+    "@girs/gnome-shell": "^50.0.4",
+    "esbuild-wasm": "^0.28.2",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.3"
   }
 }

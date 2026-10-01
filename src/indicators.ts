@@ -16,250 +16,214 @@
 // along with Statistig. If not, see <https://www.gnu.org/licenses/>.
 
 import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import GObject from 'gi://GObject';
 
-import { StatistigIcons } from './icons.js';
-import { StatistigConfig } from './config.js';
+import {StatistigIcons} from './icons.js';
+import {StatistigConfig} from './config.js';
+import {StatistigMonitor} from './monitor.js';
+import {StatistigQuickMenuToggle} from './toggle.js';
 
+type Identifier = 'proc' | 'mem';
 
-export const StatistigSystemIndicators = GObject.registerClass(
-    class StatistigSystemIndicators extends QuickSettings.SystemIndicator {
+interface Indicator {
+    icon: St.Icon;
+    label: St.Label;
+    value: number | null;
+    rounded: string;
+}
 
-        public connections: number[] = [];
-        public config: StatistigConfig | null = null;
-        public proc: St.Icon | null = null;
-        public mem: St.Icon | null = null;
-        public procLabel: St.Label | null = null;
-        public memLabel: St.Label | null = null;
-        private _lastProcRounded: string = '';
-        private _lastMemRounded: string = '';
+/**
+ * Owns the status-area icons and labels, the resource monitor and the
+ * quick-settings toggle that switches monitoring on and off.
+ */
+export class StatistigSystemIndicators extends QuickSettings.SystemIndicator {
+    static {
+        GObject.registerClass(this);
+    }
 
-        _init(): void {
-            super._init()
+    private _config: StatistigConfig;
+    private _basePath: string;
+    private _monitor: StatistigMonitor;
+    private _toggle: StatistigQuickMenuToggle;
+    private _indicators: Record<Identifier, Indicator>;
+    private _configHandlers: number[] = [];
+    private _monitorHandlers: number[] = [];
+
+    constructor(
+        config: StatistigConfig,
+        basePath: string,
+        openPreferences: () => void,
+    ) {
+        super();
+
+        this._config = config;
+        this._basePath = basePath;
+        this._indicators = {
+            proc: this._createIndicator(),
+            mem: this._createIndicator(),
+        };
+
+        this._monitor = new StatistigMonitor();
+        this._toggle = new StatistigQuickMenuToggle(basePath, openPreferences);
+        this.quickSettingsItems.push(this._toggle);
+        // Persist the on/off state across lock/unlock and restarts. The binding
+        // also sets the initial value.
+        config.bind('monitoring-enabled', this._toggle, 'checked');
+
+        this._bind();
+        this._toggle.connect('notify::checked', () => this._syncActive());
+        this._syncActive();
+    }
+
+    private _createIndicator(): Indicator {
+        const icon = this._addIndicator();
+        const label = new St.Label({
+            y_align: Clutter.ActorAlign.CENTER,
+            visible: false,
+        });
+        this.add_child(label);
+        return {icon, label, value: null, rounded: ''};
+    }
+
+    private _bind(): void {
+        const config = this._config;
+        this._configHandlers.push(
+            config.connect('icon-theme', () => this.refresh()),
+            config.connect('proc-mon-enabled', () => this._sync('proc')),
+            config.connect('mem-mon-enabled', () => this._sync('mem')),
+            config.connect('proc-lbl-enabled', () => this._sync('proc')),
+            config.connect('mem-lbl-enabled', () => this._sync('mem')),
+            config.connect('lbl-monospace', () => this._applyLabelStyle()),
+            config.connect('lbl-fixed-width', () => this.refresh()),
+            config.connect('lbl-alignment', () => this.refresh()),
+        );
+        this._applyLabelStyle();
+
+        this._monitorHandlers.push(
+            this._monitor.connect('notify::cpu-usage', () =>
+                this._update('proc', this._monitor.cpu_usage),
+            ),
+            this._monitor.connect('notify::ram-usage', () =>
+                this._update('mem', this._monitor.ram_usage),
+            ),
+        );
+    }
+
+    private _syncActive(): void {
+        if (this._toggle.checked) {
+            this._monitor.start();
+        } else {
+            this._monitor.stop();
+            // Show the neutral glyph until fresh samples arrive.
+            this._indicators.proc.value = null;
+            this._indicators.mem.value = null;
         }
+        this._sync('proc');
+        this._sync('mem');
+    }
 
-        static create(config: StatistigConfig): StatistigSystemIndicators {
-            const ins = new this();
-            ins.config = config;
-            ins.bind();
-            return ins;
-        }
+    private _sync(identifier: Identifier): void {
+        const {icon, label} = this._indicators[identifier];
+        const iconVisible =
+            this._toggle.checked &&
+            (identifier === 'proc'
+                ? this._config.procMonitoringEnabled
+                : this._config.memMonitoringEnabled);
+        const labelVisible =
+            iconVisible &&
+            (identifier === 'proc'
+                ? this._config.procLabelEnabled
+                : this._config.memLabelEnabled);
 
-        public bind(): void {
-            if (!this.config) { return }
+        label.visible = labelVisible;
+        icon.visible = iconVisible;
+        // Labels are not tracked by SystemIndicator, so re-check the box.
+        this._syncIndicatorsVisible();
+        this._render(identifier);
+    }
 
-            this.connections.push(
-                this.config.connect('proc-mon-enabled', () => {
-                    this.toggleProc();
-                }),
-                this.config.connect('mem-mon-enabled', () => {
-                    this.toggleMem();
-                }),
-                this.config.connect('proc-lbl-enabled', () => {
-                    this.toggleProc();
-                }),
-                this.config.connect('mem-lbl-enabled', () => {
-                    this.toggleMem();
-                }),
-                this.config.connect('lbl-monospace', () => {
-                    if (this.procLabel) this._applyLabelStyle(this.procLabel);
-                    if (this.memLabel) this._applyLabelStyle(this.memLabel);
-                }),
-                this.config.connect('lbl-fixed-width', () => {
-                    // Next update() call will use the new setting
-                }),
-                this.config.connect('lbl-alignment', () => {
-                    // Next update() call will use the new setting
-                })
+    private _update(identifier: Identifier, value: number): void {
+        this._indicators[identifier].value = value;
+        this._render(identifier);
+    }
+
+    /** Re-renders both indicators from the last known values, e.g. after a setting change. */
+    public refresh(): void {
+        this._indicators.proc.rounded = '';
+        this._indicators.mem.rounded = '';
+        this._render('proc');
+        this._render('mem');
+    }
+
+    private _render(identifier: Identifier): void {
+        const indicator = this._indicators[identifier];
+        const {value} = indicator;
+
+        // Before the first sample, show the theme's neutral glyph. Flooring
+        // makes the icon turn yellow exactly at 70% and red exactly at 90%.
+        const rounded =
+            value === null ? null : (Math.floor(value / 10) * 10).toString();
+        const cacheKey = rounded ?? 'none';
+
+        // Only swap the icon when the decile changes, to avoid creating a new
+        // Gio.FileIcon every second.
+        if (cacheKey !== indicator.rounded) {
+            indicator.rounded = cacheKey;
+            indicator.icon.set_gicon(
+                StatistigIcons.getSystemIndicatorSymbolicIcon(
+                    this._basePath,
+                    this._config.iconTheme,
+                    identifier,
+                    rounded,
+                ),
             );
         }
 
-        public unbind(connection: number | null = null): void {
-            if (!this.config) { return }
-            if (connection) {
-                this.config.disconnect(connection);
-            } else if (this.connections) {
-                for (let i = 0; i < this.connections.length; i++) {
-                    const c = this.connections[i];
-                    this.config.disconnect(c);
-                }
-                this.connections.length = 0;
-            }
-        }
-
-        public show(): void {
-            if (!this.config) { return }
-            this.configureProc();
-            this.configureMem();
-            Main.panel.statusArea.quickSettings.addExternalIndicator(this);
-            this.toggleProc();
-            this.toggleMem();
-        }
-
-        public configureProc(): void {
-            if (!this.config) { return }
-            this.proc = this._addIndicator();
-            this.proc.set_gicon(StatistigIcons.getStatistigSymbolicIcon(this.config.basePath));
-
-            this.procLabel = new St.Label({
-                text: '',
-                y_align: Clutter.ActorAlign.CENTER,
-                visible: false,
-            });
-            this._applyLabelStyle(this.procLabel);
-            this.proc.get_parent()?.add_child(this.procLabel);
-        }
-
-        public toggleProc(): void {
-            if (!this.config || !this.proc) { return }
-
-            if (this.config.procMonitoringEnabled) {
-                this.proc.show();
-                if (this.procLabel) {
-                    if (this.config.procLabelEnabled) {
-                        this.procLabel.show();
-                    } else {
-                        this.procLabel.hide();
-                    }
-                }
-            } else {
-                this.proc.hide();
-                this.procLabel?.hide();
-            }
-        }
-
-        public configureMem(): void {
-            if (!this.config) { return }
-            this.mem = this._addIndicator();
-            this.mem.set_gicon(StatistigIcons.getStatistigSymbolicIcon(this.config.basePath));
-
-            this.memLabel = new St.Label({
-                text: '',
-                y_align: Clutter.ActorAlign.CENTER,
-                visible: false,
-            });
-            this._applyLabelStyle(this.memLabel);
-            this.mem.get_parent()?.add_child(this.memLabel);
-        }
-
-        public toggleMem(): void {
-            if (!this.config || !this.mem) { return }
-
-            if (this.config.memMonitoringEnabled) {
-                this.mem.show();
-                if (this.memLabel) {
-                    if (this.config.memLabelEnabled) {
-                        this.memLabel.show();
-                    } else {
-                        this.memLabel.hide();
-                    }
-                }
-            } else {
-                this.mem.hide();
-                this.memLabel?.hide();
-            }
-        }
-
-        public update(identifier: string, value: number) {
-            if (!this.config) { return }
-
-            const roundedVal: string = (Math.round(value / 10) * 10).toString();
-
-            if (identifier === 'proc' && this.proc && this.config.procMonitoringEnabled) {
-                if (roundedVal !== this._lastProcRounded) {
-                    this._lastProcRounded = roundedVal;
-                    this.proc.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
-                        this.config.basePath,
-                        this.config.iconTheme,
-                        'proc',
-                        roundedVal
-                    ));
-                }
-                if (this.procLabel && this.config.procLabelEnabled) {
-                    this.procLabel.set_text(this._formatValue(value));
-                }
-            }
-
-            if (identifier === 'mem' && this.mem && this.config.memMonitoringEnabled) {
-                if (roundedVal !== this._lastMemRounded) {
-                    this._lastMemRounded = roundedVal;
-                    this.mem.set_gicon(StatistigIcons.getSystemIndicatorSymbolicIcon(
-                        this.config.basePath,
-                        this.config.iconTheme,
-                        'mem',
-                        roundedVal
-                    ));
-                }
-                if (this.memLabel && this.config.memLabelEnabled) {
-                    this.memLabel.set_text(this._formatValue(value));
-                }
-            }
-        }
-
-        public resetIconCache(): void {
-            this._lastProcRounded = '';
-            this._lastMemRounded = '';
-        }
-
-        public destroy(): void {
-            this.destroyProcIndicator();
-            this.destroyMemIndicator();
-            this.unbind();
-
-            if (this.config) {
-                this.config = null;
-            }
-
-            super.destroy();
-        }
-
-        public destroyProcIndicator(): void {
-            if (this.procLabel) {
-                this.procLabel.destroy();
-                this.procLabel = null;
-            }
-            if (this.proc) {
-                this.proc.destroy();
-                this.proc = null;
-            }
-        }
-
-        public destroyMemIndicator(): void {
-            if (this.memLabel) {
-                this.memLabel.destroy();
-                this.memLabel = null;
-            }
-            if (this.mem) {
-                this.mem.destroy();
-                this.mem = null;
-            }
-        }
-
-        private _applyLabelStyle(label: St.Label): void {
-            if (!this.config) { return }
-            let style = '';
-            if (this.config.labelMonospace) {
-                style += 'font-family: monospace;';
-            }
-            label.set_style(style || null);
-        }
-
-        private _formatValue(value: number): string {
-            if (!this.config) { return '' }
-            const text = `${value}%`;
-            if (this.config.labelFixedWidth) {
-                if (this.config.labelAlignment === 'left') {
-                    return text.padEnd(4, ' ');
-                }
-                return text.padStart(4, ' ');
-            }
-            return text;
-        }
+        indicator.label.set_text(
+            value === null ? '' : this._formatValue(value),
+        );
     }
-);
 
-export type StatistigSystemIndicators = InstanceType<typeof StatistigSystemIndicators>;
+    private _applyLabelStyle(): void {
+        const style = this._config.labelMonospace
+            ? 'font-family: monospace;'
+            : null;
+        this._indicators.proc.label.set_style(style);
+        this._indicators.mem.label.set_style(style);
+    }
+
+    private _formatValue(value: number): string {
+        const text = `${value}%`;
+        if (this._config.labelFixedWidth) {
+            if (this._config.labelAlignment === 'left') {
+                return text.padEnd(4, ' ');
+            }
+            return text.padStart(4, ' ');
+        }
+        return text;
+    }
+
+    public override destroy(): void {
+        for (const id of this._configHandlers) {
+            this._config.disconnect(id);
+        }
+        this._configHandlers = [];
+        for (const id of this._monitorHandlers) {
+            this._monitor.disconnect(id);
+        }
+        this._monitorHandlers = [];
+        this._monitor.stop();
+
+        // The binding would otherwise live until the toggle is garbage collected.
+        this._config.unbind(this._toggle, 'checked');
+        for (const item of this.quickSettingsItems) {
+            item.destroy();
+        }
+        this.quickSettingsItems = [];
+
+        super.destroy();
+    }
+}
