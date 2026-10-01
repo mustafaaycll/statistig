@@ -74,5 +74,6 @@ The generated files (`guide/docs/`, `guide/libraries.json`, `guide/.manifest.jso
 - Type definitions come from `@girs/gnome-shell` (GNOME 50 line); `@girs/gjs` must stay on the 4.x line required by it.
 - GObject subclasses without `Properties`/`Signals` meta info (`StatistigSystemIndicators`, `StatistigQuickMenuToggle`) are declared as `export class X extends ... { static { GObject.registerClass(this); } constructor(...) { super(...); ... } }`. This keeps the class type intact, whereas the `@girs` type of `const X = GObject.registerClass(class X ...)` drops static members. Classes with meta info (`StatistigMonitor`) keep the two-argument form so their properties stay typed.
 - `disable()` must undo everything `enable()` did and stay synchronous (GNOME 51 throws on an async `disable()`).
+- Don't override `vfunc_dispose`/`vfunc_finalize` in JS GObject subclasses: they run during garbage collection, where GJS blocks them and logs "Attempting to run a JS callback during garbage collection". Do cleanup explicitly from `destroy()` (e.g. `StatistigMonitor.stop()`).
 - **esbuild** (not tsc) produces the final JS output in ESM format. The `scripts/esbuild.js` config controls bundling.
 - The preferences UI (`prefs.ts`) runs in a separate process from the shell extension — avoid shared mutable state.

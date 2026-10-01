@@ -141,11 +141,6 @@ export const StatistigMonitor = GObject.registerClass(
                 }
             }
         }
-
-        override vfunc_dispose(): void {
-            this.stop();
-            super.vfunc_dispose();
-        }
     },
 );
 
